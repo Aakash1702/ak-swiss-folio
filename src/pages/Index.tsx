@@ -150,7 +150,7 @@ const Index = () => {
           </div>
           <div className="lg:col-span-4 flex justify-center lg:justify-end">
             <Avatar className="w-64 h-64 border-4 border-blue-600">
-              <AvatarImage src="/placeholder.svg" alt="Aakash Kunarapu" />
+              <AvatarImage src="/lovable-uploads/83ae2e4a-5918-4b6b-80fb-9175e8d24a85.png" alt="Aakash Kunarapu" />
               <AvatarFallback className="text-4xl font-semibold bg-blue-50 text-blue-600">AK</AvatarFallback>
             </Avatar>
           </div>
