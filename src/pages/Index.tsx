@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Github, Linkedin, Mail, ExternalLink, Download } from "lucide-react";
+import { Github, Linkedin, Mail, ExternalLink, Download, Phone, MapPin } from "lucide-react";
 
 const Index = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,35 +19,67 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const workExperience = [
+    {
+      title: "Data Scientist / Platform Compliance Analyst",
+      company: "Genpact (Meta Platforms)",
+      period: "Jan 2023 – Jul 2023",
+      achievements: [
+        "Audited Facebook Login and Account Kit integrations for 400+ apps, parsing OAuth logs and SDK telemetry with Python/SQL to surface infringements and map regional trends",
+        "Designed a gradient-boosted risk-scoring model (scikit-learn) using 25 features; top-20 list caught 78% of violations and cut manual review hours by 25%",
+        "Built PySpark pipelines in Airflow to ingest daily events into Redshift and power Tableau dashboards for near real-time compliance visibility",
+        "Guided 120 developer teams through remediation steps, boosting first-time-login success by 12% MoM"
+      ],
+      tech: ["Python", "SQL", "PySpark", "scikit-learn", "Airflow", "Redshift", "Tableau"]
+    }
+  ];
+
   const projects = [
     {
-      title: "Job Network Recommender",
-      description: "Synthetic LinkedIn data + graph theory + ML to suggest professional intro paths.",
-      tech: ["Python", "NetworkX", "PyVis", "Machine Learning"]
+      title: "Skytrax Reviews Analysis",
+      subtitle: "British Airways Virtual Internship",
+      description: "Analyzed ~3,940 reviews with VADER sentiment analysis; uncovered 56% positive vs. 41% negative trends. Extracted themes (cabin crew service, premium economy) and recommended satisfaction improvements.",
+      tech: ["Python", "VADER", "Sentiment Analysis", "Data Analysis"]
     },
     {
       title: "Marvel Universe Network Analysis",
-      description: "NetworkX & Gephi to visualize character interactions and compute centrality.",
-      tech: ["NetworkX", "Gephi", "Graph Theory", "Data Visualization"]
+      description: "NetworkX analysis of 6,000+ characters & 160,000 interactions; computed centrality and detected communities via Girvan–Newman. Built interactive Plotly & Matplotlib visuals to convey findings.",
+      tech: ["NetworkX", "Plotly", "Matplotlib", "Graph Theory", "Community Detection"]
     },
     {
-      title: "Real-Time Audio Assistant",
-      description: "System audio capture (Zoom), speech-to-text, and context-aware response generation.",
-      tech: ["Python", "Speech Recognition", "Real-Time Processing"]
+      title: "Sepsis Detection Ensemble",
+      description: "Developed LSTM-GBM stacking pipeline on 40,000+ ICU records; validated via AUC-ROC & F1-score.",
+      tech: ["LSTM", "Gradient Boosting", "TensorFlow", "Healthcare Analytics"]
     },
     {
-      title: "Custom Tailoring Portal",
-      description: "React frontend + partner-managed fabric inventory for custom Indian women's wear.",
-      tech: ["React", "JavaScript", "Inventory Management"]
+      title: "Bayesian Grid Risk Forecasting",
+      description: "Monte Carlo & Bayesian network models for grid stability; delivered stakeholder dashboards.",
+      tech: ["Bayesian Networks", "Monte Carlo", "Risk Analysis", "Dashboard Development"]
+    },
+    {
+      title: "Customer Churn Prediction",
+      description: "Random Forest model achieving 93% accuracy; applied SHAP for feature interpretation to drive production insights.",
+      tech: ["Random Forest", "SHAP", "Feature Engineering", "Production ML"]
     }
   ];
 
   const skills = {
-    "Languages": ["Python", "SQL", "JavaScript"],
-    "Frameworks/Tools": ["PySpark", "Azure Databricks", "NetworkX", "Gephi", "Docker", "Kubernetes", "n8n"],
-    "Concepts": ["Graph Theory", "Machine Learning", "Data Mining", "Web Scraping", "Real-Time Systems"],
-    "Soft Skills": ["Rapid Prototyping", "MVP Mindset", "Product Development"]
+    "Languages": ["Python", "SQL", "Java", "JavaScript"],
+    "Big Data": ["PySpark", "Apache Spark", "Data Pipelines", "Redshift", "MongoDB"],
+    "ML & Statistics": ["scikit-learn", "TensorFlow", "NLP (VADER)", "Hypothesis Testing", "PCA"],
+    "Graph Analytics": ["NetworkX", "Gephi", "Connectivity Analysis"],
+    "Visualization": ["Tableau", "Plotly", "Matplotlib", "Power BI"],
+    "Dev & Deployment": ["Docker", "Kubernetes", "Airflow", "Git", "CI/CD"],
+    "Cloud & SaaS": ["AWS", "GCP", "Supabase", "Okta", "Slack"],
+    "Practices": ["Agile", "OOP", "Feature Engineering", "Operational Monitoring"]
   };
+
+  const certifications = [
+    "Python for Data Science & Machine Learning Essential Training",
+    "British Airways Data Science Job Simulation",
+    "Big Data Analytics with Hadoop & Apache Spark",
+    "Introduction to Prompt Engineering for Generative AI"
+  ];
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -88,15 +120,29 @@ const Index = () => {
               Aakash<br />
               <span className="font-semibold">Kunarapu</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl">
-              Computer Science Graduate Student @ Kent State University
+            <p className="text-xl md:text-2xl text-gray-600 mb-4 max-w-2xl">
+              M.S. Computer Science candidate @ Kent State University
             </p>
+            <div className="flex items-center space-x-6 mb-8 text-gray-600">
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-4 h-4" />
+                <span>Kent, OH</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone className="w-4 h-4" />
+                <span>+1 330-281-0912</span>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 hover:scale-105">
                 <Download className="w-4 h-4 mr-2" />
                 Download Resume
               </Button>
-              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200">
+              <Button 
+                variant="outline" 
+                className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
+                onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
+              >
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Me
               </Button>
@@ -118,55 +164,40 @@ const Index = () => {
           <div className="text-lg leading-relaxed space-y-6 text-gray-700">
             <p>
               I'm a Computer Science graduate student at Kent State University, passionate about building 
-              data-driven solutions that make an impact.
-            </p>
-            <p>
-              With a foundation in Python and SQL, I blend graph-theoretic network analysis, machine learning, 
-              and scalable data pipelines to tackle real-world problems. From app-integrity assurance at Genpact 
-              to crafting a job-network recommender system, my work spans both rigorous research and production-ready automation.
-            </p>
-            <p>
-              I'm always exploring new tools—PySpark, Azure Databricks, and web-scraping frameworks—to broaden my impact.
+              data-driven solutions that impact real-world operations. With expertise in Python, SQL, and PySpark, 
+              I develop scalable pipelines, risk-scoring models, and network-analysis tools to uncover insights 
+              and drive compliance and performance improvements.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Experience Section */}
+      {/* Work Experience Section */}
       <section id="experience" className="py-24 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light mb-16">Experience</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16">Work Experience</h2>
           <div className="space-y-8">
-            <Card className="p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <h3 className="text-xl font-semibold">App Integrity Assurance Engineer Intern</h3>
-                <Badge variant="outline" className="w-fit">Genpact</Badge>
-              </div>
-              <ul className="text-gray-600 space-y-2 mb-4">
-                <li>• Reviewed Facebook Login/Signup integrations (Android, iOS, Web) for Meta compliance</li>
-                <li>• Implemented automated testing frameworks for OAuth authentication flows</li>
-              </ul>
-              <div className="flex flex-wrap gap-2">
-                {["Python", "Docker", "Kubernetes", "OAuth", "Git", "Jira"].map((tech) => (
-                  <Badge key={tech} variant="secondary">{tech}</Badge>
-                ))}
-              </div>
-            </Card>
-
-            <Card className="p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <h3 className="text-xl font-semibold">Research Project: Customer Churn Analysis</h3>
-                <Badge variant="outline" className="w-fit">Kent State University</Badge>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Master's course in Probabilistic Data Management focusing on predictive modeling and data analysis
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Python", "Machine Learning", "Statistical Analysis", "Data Mining"].map((tech) => (
-                  <Badge key={tech} variant="secondary">{tech}</Badge>
-                ))}
-              </div>
-            </Card>
+            {workExperience.map((job, index) => (
+              <Card key={index} className="p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-semibold">{job.title}</h3>
+                    <p className="text-blue-600 font-medium">{job.company}</p>
+                  </div>
+                  <Badge variant="outline" className="w-fit mt-2 md:mt-0">{job.period}</Badge>
+                </div>
+                <ul className="text-gray-600 space-y-3 mb-6">
+                  {job.achievements.map((achievement, i) => (
+                    <li key={i} className="leading-relaxed">• {achievement}</li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-2">
+                  {job.tech.map((tech) => (
+                    <Badge key={tech} variant="secondary">{tech}</Badge>
+                  ))}
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -177,13 +208,18 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-16">Education</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="p-8 hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <h3 className="text-xl font-semibold mb-2">Kent State University</h3>
+              <h3 className="text-xl font-semibold mb-2">Kent State University, OH</h3>
               <p className="text-blue-600 font-medium mb-4">M.S. in Computer Science</p>
-              <p className="text-gray-600 mb-4">Current</p>
+              <p className="text-gray-600 mb-4">Expected: May 2025</p>
               <div className="space-y-1 text-sm text-gray-600">
                 <p><strong>Key Courses:</strong></p>
                 <p>Advanced Databases, Machine Learning, Graph Theory, Big Data Analytics</p>
               </div>
+            </Card>
+            <Card className="p-8 hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <h3 className="text-xl font-semibold mb-2">Kakatiya University, Warangal, TG</h3>
+              <p className="text-blue-600 font-medium mb-4">B.C.A. in Computer Applications</p>
+              <p className="text-gray-600 mb-4">May 2022</p>
             </Card>
           </div>
         </div>
@@ -192,15 +228,20 @@ const Index = () => {
       {/* Projects Section */}
       <section id="projects" className="py-24 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light mb-16">Projects</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16">Project Experience</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
               <Card key={index} className="p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
                 <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-xl font-semibold flex-1">{project.title}</h3>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold">{project.title}</h3>
+                    {project.subtitle && (
+                      <p className="text-sm text-blue-600 font-medium mt-1">{project.subtitle}</p>
+                    )}
+                  </div>
                   <ExternalLink className="w-5 h-5 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer" />
                 </div>
-                <p className="text-gray-600 mb-6">{project.description}</p>
+                <p className="text-gray-600 mb-6 leading-relaxed">{project.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
                     <Badge key={tech} variant="secondary">{tech}</Badge>
@@ -215,7 +256,7 @@ const Index = () => {
       {/* Skills Section */}
       <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light mb-16">Skills</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16">Skills & Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {Object.entries(skills).map(([category, items]) => (
               <div key={category}>
@@ -233,8 +274,22 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Certifications Section */}
+      <section className="py-24 px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-light mb-16">Certifications</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {certifications.map((cert, index) => (
+              <Card key={index} className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
+                <p className="font-medium text-gray-800">{cert}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
-      <section id="contact" className="py-24 px-6 bg-gray-50">
+      <section id="contact" className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-light mb-16">Contact</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -243,20 +298,20 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Mail className="w-5 h-5 text-blue-600" />
-                  <a href="mailto:aakash.kunarapu@example.com" className="text-gray-600 hover:text-blue-600 transition-colors">
-                    aakash.kunarapu@example.com
+                  <a href="mailto:aakashkunarapu17@gmail.com" className="text-gray-600 hover:text-blue-600 transition-colors">
+                    aakashkunarapu17@gmail.com
+                  </a>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                  <a href="tel:+13302810912" className="text-gray-600 hover:text-blue-600 transition-colors">
+                    +1 330-281-0912
                   </a>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Linkedin className="w-5 h-5 text-blue-600" />
-                  <a href="https://www.linkedin.com/in/aakash-kunarapu/" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-600 hover:text-blue-600 transition-colors">
                     LinkedIn Profile
-                  </a>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Github className="w-5 h-5 text-blue-600" />
-                  <a href="https://github.com/aakash-kunarapu" className="text-gray-600 hover:text-blue-600 transition-colors">
-                    GitHub Profile
                   </a>
                 </div>
               </div>
@@ -286,10 +341,10 @@ const Index = () => {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm">© 2025 Aakash Kunarapu. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="https://www.linkedin.com/in/aakash-kunarapu/" className="text-gray-400 hover:text-blue-600 transition-colors">
+            <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-400 hover:text-blue-600 transition-colors">
               <Linkedin className="w-5 h-5" />
             </a>
-            <a href="https://github.com/aakash-kunarapu" className="text-gray-400 hover:text-blue-600 transition-colors">
+            <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors">
               <Github className="w-5 h-5" />
             </a>
           </div>
