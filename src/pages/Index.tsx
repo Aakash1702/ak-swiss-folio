@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -175,10 +174,7 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-12">About</h2>
           <div className="text-lg leading-relaxed space-y-6 text-gray-700">
             <p>
-              I'm a Computer Science graduate student at Kent State University, passionate about building 
-              data-driven solutions that impact real-world operations. With expertise in Python, SQL, and PySpark, 
-              I develop scalable pipelines, risk-scoring models, and network-analysis tools to uncover insights 
-              and drive compliance and performance improvements.
+              I'm <strong>Aakash Kunarapu</strong>, M.S. Computer Science (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
             </p>
           </div>
         </div>
