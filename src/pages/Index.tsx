@@ -181,21 +181,21 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20 overflow-hidden">
-        <div className="w-full max-w-8xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="space-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
               <div className="space-y-6">
-                <h1 className="text-6xl md:text-8xl lg:text-9xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
                   Aakash
                   <br />
                   <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     Kunarapu
                   </span>
                 </h1>
-                <p className="text-2xl md:text-3xl lg:text-4xl text-gray-600 max-w-3xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
+                <p className="text-xl md:text-2xl lg:text-3xl text-gray-600 max-w-2xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
                   M.S. Computer Science Grad @ Kent State University
                 </p>
-                <p className="text-lg md:text-xl text-gray-500 max-w-2xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards]">
+                <p className="text-lg md:text-xl text-gray-500 max-w-xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards]">
                   Data Scientist & ML Engineer architecting high-throughput pipelines and predictive models that transform raw data into strategic insights
                 </p>
               </div>
