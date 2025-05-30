@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -179,50 +180,77 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center px-6 pt-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
-            <h1 className="text-5xl md:text-7xl font-light leading-tight mb-6 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
-              Aakash<br />
-              <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Kunarapu</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-4 max-w-2xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
-              M.S. Computer Science candidate @ Kent State University
-            </p>
-            <div className="flex items-center space-x-6 mb-8 text-gray-600 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]">
-              <div className="flex items-center space-x-2 hover:text-blue-600 transition-colors duration-300">
-                <MapPin className="w-4 h-4" />
-                <span>Kent, OH</span>
+      <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20 overflow-hidden">
+        <div className="w-full max-w-8xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
+              <div className="space-y-6">
+                <h1 className="text-6xl md:text-8xl lg:text-9xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
+                  Aakash
+                  <br />
+                  <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Kunarapu
+                  </span>
+                </h1>
+                <p className="text-2xl md:text-3xl lg:text-4xl text-gray-600 max-w-3xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
+                  M.S. Computer Science Grad @ Kent State University
+                </p>
+                <p className="text-lg md:text-xl text-gray-500 max-w-2xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards]">
+                  Data Scientist & ML Engineer architecting high-throughput pipelines and predictive models that transform raw data into strategic insights
+                </p>
               </div>
-              <div className="flex items-center space-x-2 hover:text-blue-600 transition-colors duration-300">
-                <Phone className="w-4 h-4" />
-                <span>+1 330-281-0912</span>
+              
+              <div className="flex flex-wrap items-center gap-6 text-gray-600 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]">
+                <div className="flex items-center space-x-2 hover:text-blue-600 transition-colors duration-300">
+                  <MapPin className="w-5 h-5" />
+                  <span className="text-lg">Kent, OH</span>
+                </div>
+                <div className="flex items-center space-x-2 hover:text-blue-600 transition-colors duration-300">
+                  <Phone className="w-5 h-5" />
+                  <span className="text-lg">+1 330-281-0912</span>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]">
+                <Button 
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl transform hover:-translate-y-1 text-lg px-8 py-4"
+                  onClick={handleDownloadResume}
+                >
+                  <Download className="w-5 h-5 mr-2" />
+                  Download Resume
+                </Button>
+                <Button 
+                  size="lg"
+                  variant="outline" 
+                  className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-xl transform hover:-translate-y-1 text-lg px-8 py-4"
+                  onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
+                >
+                  <Mail className="w-5 h-5 mr-2" />
+                  Contact Me
+                </Button>
+              </div>
+              
+              <div className="flex space-x-6 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards]">
+                <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-125">
+                  <Linkedin className="w-7 h-7" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-125">
+                  <Github className="w-7 h-7" />
+                </a>
+                <a href="mailto:aakashkunarapu17@gmail.com" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-125">
+                  <Mail className="w-7 h-7" />
+                </a>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]">
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl transform hover:-translate-y-1"
-                onClick={handleDownloadResume}
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Download Resume
-              </Button>
-              <Button 
-                variant="outline" 
-                className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-xl transform hover:-translate-y-1"
-                onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                Contact Me
-              </Button>
-            </div>
-          </div>
-          <div className="lg:col-span-4 flex justify-center lg:justify-end">
-            <div className="transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
-              <Avatar className="w-64 h-64 border-4 border-blue-600 hover:border-purple-600 transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-blue-500/20">
-                <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" alt="Aakash Kunarapu" />
-                <AvatarFallback className="text-4xl font-semibold bg-blue-50 text-blue-600">AK</AvatarFallback>
-              </Avatar>
+            
+            <div className="flex justify-center lg:justify-end">
+              <div className="transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
+                <Avatar className="w-80 h-80 lg:w-96 lg:h-96 border-4 border-blue-600 hover:border-purple-600 transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-blue-500/20">
+                  <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" alt="Aakash Kunarapu" />
+                  <AvatarFallback className="text-6xl font-semibold bg-blue-50 text-blue-600">AK</AvatarFallback>
+                </Avatar>
+              </div>
             </div>
           </div>
         </div>
@@ -242,7 +270,7 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-12 bg-gradient-to-r from-gray-900 to-blue-600 bg-clip-text text-transparent">About</h2>
           <div className="text-lg leading-relaxed space-y-6 text-gray-700">
             <p className="hover:text-gray-900 transition-colors duration-300">
-              I'm <strong className="text-blue-600">Aakash Kunarapu</strong>, M.S. Computer Science (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
+              I'm <strong className="text-blue-600">Aakash Kunarapu</strong>, M.S. Computer Science Grad (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
             </p>
           </div>
         </div>
