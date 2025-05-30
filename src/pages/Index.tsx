@@ -6,9 +6,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Github, Linkedin, Mail, ExternalLink, Download, Phone, MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +32,42 @@ const Index = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
+    const mailtoLink = `mailto:aakashkunarapu17@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Clear form and show success message
+    setFormData({ name: '', email: '', message: '' });
+    toast({
+      title: "Success",
+      description: "Your email client has been opened with the message. Please send the email to complete your message.",
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const workExperience = [
@@ -325,17 +368,40 @@ const Index = () => {
               </div>
             </div>
             <Card className="p-8 bg-white">
-              <form className="space-y-6">
+              <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div>
-                  <Input placeholder="Your Name" className="border-gray-200 focus:border-blue-600" />
+                  <Input 
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Your Name" 
+                    className="border-gray-200 focus:border-blue-600" 
+                    required
+                  />
                 </div>
                 <div>
-                  <Input type="email" placeholder="Your Email" className="border-gray-200 focus:border-blue-600" />
+                  <Input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Your Email" 
+                    className="border-gray-200 focus:border-blue-600" 
+                    required
+                  />
                 </div>
                 <div>
-                  <Textarea placeholder="Your Message" rows={4} className="border-gray-200 focus:border-blue-600" />
+                  <Textarea 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Your Message" 
+                    rows={4} 
+                    className="border-gray-200 focus:border-blue-600" 
+                    required
+                  />
                 </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200">
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200">
                   Send Message
                 </Button>
               </form>
