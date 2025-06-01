@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -243,58 +244,7 @@
     }
   }
 
-  /* Enhanced 3D particle effects */
-  @keyframes float3d {
-    0%, 100% {
-      transform: translateY(0px) translateZ(0px) rotateY(0deg);
-    }
-    33% {
-      transform: translateY(-8px) translateZ(20px) rotateY(120deg);
-    }
-    66% {
-      transform: translateY(4px) translateZ(-10px) rotateY(240deg);
-    }
-  }
-
-  @keyframes depthShift {
-    0%, 100% {
-      transform: translateZ(0px) scale(1);
-      opacity: 0.3;
-    }
-    50% {
-      transform: translateZ(50px) scale(1.2);
-      opacity: 0.6;
-    }
-  }
-
-  @keyframes parallaxFloat {
-    0%, 100% {
-      transform: translateY(0px) translateX(0px);
-    }
-    25% {
-      transform: translateY(-10px) translateX(5px);
-    }
-    50% {
-      transform: translateY(0px) translateX(-5px);
-    }
-    75% {
-      transform: translateY(10px) translateX(5px);
-    }
-  }
-
-  .animate-float3d {
-    animation: float3d 8s ease-in-out infinite;
-  }
-
-  .animate-depth-shift {
-    animation: depthShift 6s ease-in-out infinite;
-  }
-
-  .animate-parallax-float {
-    animation: parallaxFloat 10s ease-in-out infinite;
-  }
-
-  /* 3D perspective for containers */
+  /* Professional 3D utilities */
   .perspective-1000 {
     perspective: 1000px;
   }
@@ -303,13 +253,81 @@
     transform-style: preserve-3d;
   }
 
-  /* Subtle glow effects for particles */
-  .particle-glow {
-    filter: drop-shadow(0 0 6px currentColor);
+  /* Smooth performance-focused animations */
+  @keyframes smoothFloat {
+    0%, 100% {
+      transform: translateY(0px) translateZ(0px);
+    }
+    50% {
+      transform: translateY(-8px) translateZ(10px);
+    }
   }
 
-  /* Enhanced scroll-based transforms */
+  @keyframes smoothPulse {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes subtleGlow {
+    0%, 100% {
+      filter: brightness(1) blur(0px);
+    }
+    50% {
+      filter: brightness(1.2) blur(0.5px);
+    }
+  }
+
+  .animate-smooth-float {
+    animation: smoothFloat 8s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .animate-smooth-pulse {
+    animation: smoothPulse 6s ease-in-out infinite;
+    will-change: opacity, transform;
+  }
+
+  .animate-subtle-glow {
+    animation: subtleGlow 4s ease-in-out infinite;
+    will-change: filter;
+  }
+
+  /* Enhanced scroll-based parallax */
   .scroll-parallax {
     will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* GPU-accelerated transitions */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+
+  /* Optimized blur effects */
+  .soft-blur {
+    filter: blur(0.5px);
+    backdrop-filter: blur(0.5px);
+  }
+
+  .medium-blur {
+    filter: blur(1px);
+    backdrop-filter: blur(1px);
+  }
+
+  /* Professional ambient lighting */
+  .ambient-glow {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.05);
+  }
+
+  .ambient-glow-purple {
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.1), 0 0 20px rgba(147, 51, 234, 0.05);
   }
 }

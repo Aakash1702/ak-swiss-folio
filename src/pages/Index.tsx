@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -167,122 +168,129 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
-      {/* Enhanced 3D Particle Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Left Side 3D Particles */}
-        <div className="absolute left-0 top-0 w-1/4 h-full">
-          {[...Array(15)].map((_, i) => (
+      {/* Professional 3D Particle Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden perspective-1000">
+        {/* Left Side Elegant Particles */}
+        <div className="absolute left-0 top-0 w-1/6 h-full transform-3d">
+          {[...Array(8)].map((_, i) => (
             <div
               key={`left-${i}`}
-              className="absolute w-1 h-1 bg-blue-300 rounded-full opacity-40"
+              className="absolute w-1 h-1 bg-blue-400/60 rounded-full"
               style={{
-                left: `${Math.random() * 100}%`,
+                left: `${20 + Math.random() * 60}%`,
                 top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (0.1 + Math.random() * 0.3)}px) translateZ(${Math.random() * 100}px)`,
-                animation: `float ${4 + Math.random() * 4}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 6}s`,
-                filter: `blur(${Math.random() * 2}px)`,
-                boxShadow: `0 0 ${4 + Math.random() * 8}px rgba(59, 130, 246, 0.4)`
+                transform: `translateY(${scrollY * (0.1 + i * 0.02)}px) translateZ(${i * 20}px)`,
+                animation: `float ${8 + i}s ease-in-out infinite`,
+                animationDelay: `${i * 0.5}s`,
+                opacity: 0.6 - (i * 0.05),
+                filter: 'blur(0.5px)',
+                boxShadow: '0 0 8px rgba(59, 130, 246, 0.3)'
               }}
             />
           ))}
-          {/* Larger depth particles */}
-          {[...Array(8)].map((_, i) => (
+          {/* Larger ambient particles */}
+          {[...Array(4)].map((_, i) => (
             <div
               key={`left-large-${i}`}
-              className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-20"
+              className="absolute w-2 h-2 bg-gradient-to-r from-blue-300/40 to-cyan-300/40 rounded-full"
               style={{
-                left: `${Math.random() * 100}%`,
+                left: `${Math.random() * 80}%`,
                 top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (0.05 + Math.random() * 0.2)}px) translateX(${mousePosition.x * 0.01}px) scale(${0.5 + Math.random() * 0.5})`,
-                animation: `float ${6 + Math.random() * 4}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 8}s`,
-                filter: `blur(${1 + Math.random() * 3}px)`
+                transform: `translateY(${scrollY * (0.05 + i * 0.01)}px) translateX(${mousePosition.x * 0.005}px) translateZ(${30 + i * 15}px)`,
+                animation: `float ${12 + i * 2}s ease-in-out infinite`,
+                animationDelay: `${i * 1.5}s`,
+                filter: 'blur(1px)',
+                opacity: 0.4
               }}
             />
           ))}
         </div>
 
-        {/* Right Side 3D Particles */}
-        <div className="absolute right-0 top-0 w-1/4 h-full">
-          {[...Array(15)].map((_, i) => (
-            <div
-              key={`right-${i}`}
-              className="absolute w-1 h-1 bg-purple-300 rounded-full opacity-40"
-              style={{
-                right: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (-0.1 - Math.random() * 0.3)}px) translateZ(${Math.random() * 100}px)`,
-                animation: `float ${4 + Math.random() * 4}s ease-in-out infinite reverse`,
-                animationDelay: `${Math.random() * 6}s`,
-                filter: `blur(${Math.random() * 2}px)`,
-                boxShadow: `0 0 ${4 + Math.random() * 8}px rgba(147, 51, 234, 0.4)`
-              }}
-            />
-          ))}
-          {/* Larger depth particles */}
+        {/* Right Side Elegant Particles */}
+        <div className="absolute right-0 top-0 w-1/6 h-full transform-3d">
           {[...Array(8)].map((_, i) => (
             <div
-              key={`right-large-${i}`}
-              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-20"
+              key={`right-${i}`}
+              className="absolute w-1 h-1 bg-purple-400/60 rounded-full"
               style={{
-                right: `${Math.random() * 100}%`,
+                right: `${20 + Math.random() * 60}%`,
                 top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (-0.05 - Math.random() * 0.2)}px) translateX(${-mousePosition.x * 0.01}px) scale(${0.5 + Math.random() * 0.5})`,
-                animation: `float ${6 + Math.random() * 4}s ease-in-out infinite reverse`,
-                animationDelay: `${Math.random() * 8}s`,
-                filter: `blur(${1 + Math.random() * 3}px)`
+                transform: `translateY(${scrollY * (-0.1 - i * 0.02)}px) translateZ(${i * 20}px)`,
+                animation: `float ${8 + i}s ease-in-out infinite reverse`,
+                animationDelay: `${i * 0.5}s`,
+                opacity: 0.6 - (i * 0.05),
+                filter: 'blur(0.5px)',
+                boxShadow: '0 0 8px rgba(147, 51, 234, 0.3)'
+              }}
+            />
+          ))}
+          {/* Larger ambient particles */}
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={`right-large-${i}`}
+              className="absolute w-2 h-2 bg-gradient-to-r from-purple-300/40 to-pink-300/40 rounded-full"
+              style={{
+                right: `${Math.random() * 80}%`,
+                top: `${Math.random() * 100}%`,
+                transform: `translateY(${scrollY * (-0.05 - i * 0.01)}px) translateX(${-mousePosition.x * 0.005}px) translateZ(${30 + i * 15}px)`,
+                animation: `float ${12 + i * 2}s ease-in-out infinite reverse`,
+                animationDelay: `${i * 1.5}s`,
+                filter: 'blur(1px)',
+                opacity: 0.4
               }}
             />
           ))}
         </div>
 
-        {/* Center Floating Elements with 3D depth */}
-        {[...Array(12)].map((_, i) => (
+        {/* Center Depth Particles */}
+        {[...Array(6)].map((_, i) => (
           <div
             key={`center-${i}`}
-            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full opacity-30"
+            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-indigo-300/30 to-blue-300/30 rounded-full"
             style={{
-              left: `${20 + Math.random() * 60}%`,
+              left: `${30 + Math.random() * 40}%`,
               top: `${Math.random() * 100}%`,
-              transform: `translateY(${scrollY * (0.02 + Math.random() * 0.08)}px) translateZ(${50 + Math.random() * 100}px) rotateY(${scrollY * 0.1}deg)`,
-              animation: `float ${5 + Math.random() * 6}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 10}s`,
-              filter: `blur(${0.5 + Math.random() * 1.5}px)`,
-              boxShadow: `0 0 ${6 + Math.random() * 10}px rgba(99, 102, 241, 0.3)`,
-              transition: 'transform 0.1s ease-out'
+              transform: `translateY(${scrollY * (0.03 + i * 0.01)}px) translateZ(${50 + i * 25}px) rotateY(${scrollY * 0.02}deg)`,
+              animation: `float ${15 + i * 3}s ease-in-out infinite`,
+              animationDelay: `${i * 2}s`,
+              filter: 'blur(0.8px)',
+              opacity: 0.3,
+              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
             }}
           />
         ))}
         
-        {/* Dynamic Gradient Orbs with scroll parallax */}
+        {/* Ambient Gradient Orbs */}
         <div 
-          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/8 to-purple-400/8 rounded-full blur-3xl"
           style={{
-            left: mousePosition.x / 15 + scrollY * 0.1,
-            top: mousePosition.y / 15 + scrollY * 0.05,
-            transform: `translate(-50%, -50%) scale(${1 + scrollY * 0.0005})`,
-            animation: 'pulse 4s ease-in-out infinite'
+            left: `${10 + mousePosition.x / 50}px`,
+            top: `${100 + mousePosition.y / 30 + scrollY * 0.02}px`,
+            transform: `scale(${1 + scrollY * 0.0002})`,
+            animation: 'pulse 8s ease-in-out infinite',
+            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         />
         <div 
-          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"
+          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/8 to-pink-400/8 rounded-full blur-3xl"
           style={{
-            right: mousePosition.x / 20 - scrollY * 0.08,
-            bottom: mousePosition.y / 20 - scrollY * 0.03,
-            transform: `scale(${1 + scrollY * 0.0003})`,
-            animation: 'pulse 6s ease-in-out infinite',
-            animationDelay: '2s'
+            right: `${10 - mousePosition.x / 50}px`,
+            bottom: `${100 - mousePosition.y / 30 - scrollY * 0.02}px`,
+            transform: `scale(${1 + scrollY * 0.0001})`,
+            animation: 'pulse 10s ease-in-out infinite',
+            animationDelay: '4s',
+            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         />
 
-        {/* Subtle connecting lines that appear on scroll */}
+        {/* Subtle Interactive Layer */}
         <div 
           className="absolute inset-0"
           style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.03) 0%, transparent 50%)`,
-            transform: `translateY(${scrollY * -0.1}px)`,
-            opacity: Math.min(scrollY / 1000, 0.5)
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.015) 0%, transparent 60%)`,
+            transform: `translateY(${scrollY * -0.02}px)`,
+            opacity: Math.min(scrollY / 2000, 0.3),
+            transition: 'opacity 0.3s ease-out'
           }}
         />
       </div>
@@ -449,7 +457,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Education Section */}
       <section 
         className="py-24 px-6 relative"
         data-animate
@@ -480,7 +487,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
       <section 
         id="projects" 
         className="py-24 px-6 bg-gradient-to-br from-gray-50 to-green-50 relative"
@@ -516,7 +522,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Skills Section */}
       <section 
         className="py-24 px-6 relative"
         data-animate
@@ -553,7 +558,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Certifications Section */}
       <section 
         className="py-24 px-6 bg-gradient-to-br from-gray-50 to-yellow-50 relative"
         data-animate
@@ -575,7 +579,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section 
         id="contact" 
         className="py-24 px-6 relative"
@@ -654,7 +657,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-12 px-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm hover:text-gray-800 transition-colors duration-300 hover:scale-105">© 2025 Aakash Kunarapu. All rights reserved.</p>
