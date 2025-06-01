@@ -215,26 +215,25 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20 overflow-hidden relative">
-        <div className="w-full max-w-6xl mx-auto relative z-10">
+        <div className="w-full max-w-6xl mx-auto relative z-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="space-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
               <div className="space-y-6">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] gradient-text">
-                  Aakash
-                  <br />
-                  <span className="font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] text-gray-900 relative z-30">
+                  <span className="block text-gray-900 font-semibold">Aakash</span>
+                  <span className="block font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">
                     Kunarapu
                   </span>
                 </h1>
-                <p className="text-xl md:text-2xl lg:text-3xl text-gray-600 max-w-2xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards] hover:text-blue-600 transition-colors duration-500">
+                <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 max-w-2xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards] hover:text-blue-600 transition-colors duration-500 relative z-30">
                   M.S. Computer Science Grad @ Kent State University
                 </p>
-                <p className="text-lg md:text-xl text-gray-500 max-w-xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards] hover:text-gray-700 transition-colors duration-300">
+                <p className="text-lg md:text-xl text-gray-600 max-w-xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards] hover:text-gray-700 transition-colors duration-300 relative z-30">
                   Data Scientist & ML Engineer architecting high-throughput pipelines and predictive models that transform raw data into strategic insights
                 </p>
               </div>
               
-              <div className="flex flex-wrap items-center gap-6 text-gray-600 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]">
+              <div className="flex flex-wrap items-center gap-6 text-gray-600 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards] relative z-30">
                 <div className="flex items-center space-x-2 hover:text-blue-600 transition-all duration-300 hover:scale-110 cursor-pointer">
                   <MapPin className="w-5 h-5 animate-bounce" />
                   <span className="text-lg">Kent, OH</span>
@@ -245,7 +244,7 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]">
+              <div className="flex flex-col sm:flex-row gap-4 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards] relative z-30">
                 <Button 
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-2 text-lg px-8 py-4 animate-glow"
@@ -265,7 +264,7 @@ const Index = () => {
                 </Button>
               </div>
               
-              <div className="flex space-x-6 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards]">
+              <div className="flex space-x-6 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards] relative z-30">
                 <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-150 hover:rotate-12 animate-float">
                   <Linkedin className="w-7 h-7" />
                 </a>
@@ -279,7 +278,7 @@ const Index = () => {
             </div>
             
             <div className="flex justify-center lg:justify-end">
-              <div className="transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] relative">
+              <div className="transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] relative z-30">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-2xl opacity-20 animate-pulse scale-110"></div>
                 <Avatar className="w-80 h-80 lg:w-96 lg:h-96 border-4 border-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-1 hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/50 animate-float relative z-10">
                   <div className="w-full h-full bg-white rounded-full p-1">
