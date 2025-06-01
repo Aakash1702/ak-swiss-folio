@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -242,5 +241,75 @@
     100% {
       background-position: 0% 50%;
     }
+  }
+
+  /* Enhanced 3D particle effects */
+  @keyframes float3d {
+    0%, 100% {
+      transform: translateY(0px) translateZ(0px) rotateY(0deg);
+    }
+    33% {
+      transform: translateY(-8px) translateZ(20px) rotateY(120deg);
+    }
+    66% {
+      transform: translateY(4px) translateZ(-10px) rotateY(240deg);
+    }
+  }
+
+  @keyframes depthShift {
+    0%, 100% {
+      transform: translateZ(0px) scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateZ(50px) scale(1.2);
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes parallaxFloat {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px);
+    }
+    25% {
+      transform: translateY(-10px) translateX(5px);
+    }
+    50% {
+      transform: translateY(0px) translateX(-5px);
+    }
+    75% {
+      transform: translateY(10px) translateX(5px);
+    }
+  }
+
+  .animate-float3d {
+    animation: float3d 8s ease-in-out infinite;
+  }
+
+  .animate-depth-shift {
+    animation: depthShift 6s ease-in-out infinite;
+  }
+
+  .animate-parallax-float {
+    animation: parallaxFloat 10s ease-in-out infinite;
+  }
+
+  /* 3D perspective for containers */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* Subtle glow effects for particles */
+  .particle-glow {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+
+  /* Enhanced scroll-based transforms */
+  .scroll-parallax {
+    will-change: transform;
   }
 }

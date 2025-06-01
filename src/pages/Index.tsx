@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [formData, setFormData] = useState({
@@ -21,7 +22,9 @@ const Index = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 50);
+      setScrollY(currentScrollY);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -164,37 +167,122 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
+      {/* Enhanced 3D Particle Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Floating Particles */}
-        {[...Array(20)].map((_, i) => (
+        {/* Left Side 3D Particles */}
+        <div className="absolute left-0 top-0 w-1/4 h-full">
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={`left-${i}`}
+              className="absolute w-1 h-1 bg-blue-300 rounded-full opacity-40"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                transform: `translateY(${scrollY * (0.1 + Math.random() * 0.3)}px) translateZ(${Math.random() * 100}px)`,
+                animation: `float ${4 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 6}s`,
+                filter: `blur(${Math.random() * 2}px)`,
+                boxShadow: `0 0 ${4 + Math.random() * 8}px rgba(59, 130, 246, 0.4)`
+              }}
+            />
+          ))}
+          {/* Larger depth particles */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={`left-large-${i}`}
+              className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-20"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                transform: `translateY(${scrollY * (0.05 + Math.random() * 0.2)}px) translateX(${mousePosition.x * 0.01}px) scale(${0.5 + Math.random() * 0.5})`,
+                animation: `float ${6 + Math.random() * 4}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 8}s`,
+                filter: `blur(${1 + Math.random() * 3}px)`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Right Side 3D Particles */}
+        <div className="absolute right-0 top-0 w-1/4 h-full">
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={`right-${i}`}
+              className="absolute w-1 h-1 bg-purple-300 rounded-full opacity-40"
+              style={{
+                right: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                transform: `translateY(${scrollY * (-0.1 - Math.random() * 0.3)}px) translateZ(${Math.random() * 100}px)`,
+                animation: `float ${4 + Math.random() * 4}s ease-in-out infinite reverse`,
+                animationDelay: `${Math.random() * 6}s`,
+                filter: `blur(${Math.random() * 2}px)`,
+                boxShadow: `0 0 ${4 + Math.random() * 8}px rgba(147, 51, 234, 0.4)`
+              }}
+            />
+          ))}
+          {/* Larger depth particles */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={`right-large-${i}`}
+              className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-20"
+              style={{
+                right: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                transform: `translateY(${scrollY * (-0.05 - Math.random() * 0.2)}px) translateX(${-mousePosition.x * 0.01}px) scale(${0.5 + Math.random() * 0.5})`,
+                animation: `float ${6 + Math.random() * 4}s ease-in-out infinite reverse`,
+                animationDelay: `${Math.random() * 8}s`,
+                filter: `blur(${1 + Math.random() * 3}px)`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Center Floating Elements with 3D depth */}
+        {[...Array(12)].map((_, i) => (
           <div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-200 rounded-full animate-float opacity-20"
+            key={`center-${i}`}
+            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full opacity-30"
             style={{
-              left: `${Math.random() * 100}%`,
+              left: `${20 + Math.random() * 60}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 6}s`,
-              animationDuration: `${4 + Math.random() * 4}s`
+              transform: `translateY(${scrollY * (0.02 + Math.random() * 0.08)}px) translateZ(${50 + Math.random() * 100}px) rotateY(${scrollY * 0.1}deg)`,
+              animation: `float ${5 + Math.random() * 6}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 10}s`,
+              filter: `blur(${0.5 + Math.random() * 1.5}px)`,
+              boxShadow: `0 0 ${6 + Math.random() * 10}px rgba(99, 102, 241, 0.3)`,
+              transition: 'transform 0.1s ease-out'
             }}
           />
         ))}
         
-        {/* Gradient Orbs */}
+        {/* Dynamic Gradient Orbs with scroll parallax */}
         <div 
-          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse"
+          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"
           style={{
-            left: mousePosition.x / 10,
-            top: mousePosition.y / 10,
-            transform: 'translate(-50%, -50%)'
+            left: mousePosition.x / 15 + scrollY * 0.1,
+            top: mousePosition.y / 15 + scrollY * 0.05,
+            transform: `translate(-50%, -50%) scale(${1 + scrollY * 0.0005})`,
+            animation: 'pulse 4s ease-in-out infinite'
           }}
         />
         <div 
-          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/10 to-pink-400/10 rounded-full blur-3xl animate-pulse"
+          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"
           style={{
-            right: mousePosition.x / 15,
-            bottom: mousePosition.y / 15,
-            animationDelay: '1s'
+            right: mousePosition.x / 20 - scrollY * 0.08,
+            bottom: mousePosition.y / 20 - scrollY * 0.03,
+            transform: `scale(${1 + scrollY * 0.0003})`,
+            animation: 'pulse 6s ease-in-out infinite',
+            animationDelay: '2s'
+          }}
+        />
+
+        {/* Subtle connecting lines that appear on scroll */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.03) 0%, transparent 50%)`,
+            transform: `translateY(${scrollY * -0.1}px)`,
+            opacity: Math.min(scrollY / 1000, 0.5)
           }}
         />
       </div>
