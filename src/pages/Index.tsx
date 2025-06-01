@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -168,129 +167,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
-      {/* Professional 3D Particle Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden perspective-1000">
-        {/* Left Side Elegant Particles */}
-        <div className="absolute left-0 top-0 w-1/6 h-full transform-3d">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={`left-${i}`}
-              className="absolute w-1 h-1 bg-blue-400/60 rounded-full"
-              style={{
-                left: `${20 + Math.random() * 60}%`,
-                top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (0.1 + i * 0.02)}px) translateZ(${i * 20}px)`,
-                animation: `float ${8 + i}s ease-in-out infinite`,
-                animationDelay: `${i * 0.5}s`,
-                opacity: 0.6 - (i * 0.05),
-                filter: 'blur(0.5px)',
-                boxShadow: '0 0 8px rgba(59, 130, 246, 0.3)'
-              }}
-            />
-          ))}
-          {/* Larger ambient particles */}
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={`left-large-${i}`}
-              className="absolute w-2 h-2 bg-gradient-to-r from-blue-300/40 to-cyan-300/40 rounded-full"
-              style={{
-                left: `${Math.random() * 80}%`,
-                top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (0.05 + i * 0.01)}px) translateX(${mousePosition.x * 0.005}px) translateZ(${30 + i * 15}px)`,
-                animation: `float ${12 + i * 2}s ease-in-out infinite`,
-                animationDelay: `${i * 1.5}s`,
-                filter: 'blur(1px)',
-                opacity: 0.4
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Right Side Elegant Particles */}
-        <div className="absolute right-0 top-0 w-1/6 h-full transform-3d">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={`right-${i}`}
-              className="absolute w-1 h-1 bg-purple-400/60 rounded-full"
-              style={{
-                right: `${20 + Math.random() * 60}%`,
-                top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (-0.1 - i * 0.02)}px) translateZ(${i * 20}px)`,
-                animation: `float ${8 + i}s ease-in-out infinite reverse`,
-                animationDelay: `${i * 0.5}s`,
-                opacity: 0.6 - (i * 0.05),
-                filter: 'blur(0.5px)',
-                boxShadow: '0 0 8px rgba(147, 51, 234, 0.3)'
-              }}
-            />
-          ))}
-          {/* Larger ambient particles */}
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={`right-large-${i}`}
-              className="absolute w-2 h-2 bg-gradient-to-r from-purple-300/40 to-pink-300/40 rounded-full"
-              style={{
-                right: `${Math.random() * 80}%`,
-                top: `${Math.random() * 100}%`,
-                transform: `translateY(${scrollY * (-0.05 - i * 0.01)}px) translateX(${-mousePosition.x * 0.005}px) translateZ(${30 + i * 15}px)`,
-                animation: `float ${12 + i * 2}s ease-in-out infinite reverse`,
-                animationDelay: `${i * 1.5}s`,
-                filter: 'blur(1px)',
-                opacity: 0.4
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Center Depth Particles */}
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={`center-${i}`}
-            className="absolute w-1.5 h-1.5 bg-gradient-to-r from-indigo-300/30 to-blue-300/30 rounded-full"
-            style={{
-              left: `${30 + Math.random() * 40}%`,
-              top: `${Math.random() * 100}%`,
-              transform: `translateY(${scrollY * (0.03 + i * 0.01)}px) translateZ(${50 + i * 25}px) rotateY(${scrollY * 0.02}deg)`,
-              animation: `float ${15 + i * 3}s ease-in-out infinite`,
-              animationDelay: `${i * 2}s`,
-              filter: 'blur(0.8px)',
-              opacity: 0.3,
-              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
-          />
-        ))}
-        
-        {/* Ambient Gradient Orbs */}
+      {/* Simple Background Effects - Non-intrusive */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {/* Subtle Ambient Gradient Orbs - Far in background */}
         <div 
-          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/8 to-purple-400/8 rounded-full blur-3xl"
+          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/4 to-purple-400/4 rounded-full blur-3xl"
           style={{
-            left: `${10 + mousePosition.x / 50}px`,
-            top: `${100 + mousePosition.y / 30 + scrollY * 0.02}px`,
-            transform: `scale(${1 + scrollY * 0.0002})`,
-            animation: 'pulse 8s ease-in-out infinite',
-            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+            left: '10%',
+            top: '20%',
+            animation: 'pulse 12s ease-in-out infinite',
           }}
         />
         <div 
-          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/8 to-pink-400/8 rounded-full blur-3xl"
+          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/4 to-pink-400/4 rounded-full blur-3xl"
           style={{
-            right: `${10 - mousePosition.x / 50}px`,
-            bottom: `${100 - mousePosition.y / 30 - scrollY * 0.02}px`,
-            transform: `scale(${1 + scrollY * 0.0001})`,
-            animation: 'pulse 10s ease-in-out infinite',
-            animationDelay: '4s',
-            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
-          }}
-        />
-
-        {/* Subtle Interactive Layer */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.015) 0%, transparent 60%)`,
-            transform: `translateY(${scrollY * -0.02}px)`,
-            opacity: Math.min(scrollY / 2000, 0.3),
-            transition: 'opacity 0.3s ease-out'
+            right: '10%',
+            bottom: '20%',
+            animation: 'pulse 15s ease-in-out infinite',
+            animationDelay: '7s',
           }}
         />
       </div>
