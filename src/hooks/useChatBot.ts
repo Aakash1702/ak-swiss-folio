@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { pipeline } from '@huggingface/transformers';
 
@@ -67,26 +66,32 @@ export const useChatBot = () => {
       try {
         console.log('Initializing AI models...');
         
-        // Try WebGPU first, fallback to CPU
-        let device = 'webgpu';
+        // Check WebGPU availability properly
+        const hasWebGPU = 'gpu' in navigator;
+        let device: 'webgpu' | 'cpu' = 'cpu';
         let embeddingPipeline = null;
         let generationPipeline = null;
 
-        try {
-          // Test WebGPU availability
-          if (!navigator.gpu) {
-            throw new Error('WebGPU not available');
+        if (hasWebGPU) {
+          try {
+            device = 'webgpu';
+            embeddingPipeline = await pipeline(
+              'feature-extraction',
+              'Xenova/all-MiniLM-L6-v2',
+              { device: 'webgpu' }
+            );
+            console.log('WebGPU embedding model loaded successfully');
+          } catch (webgpuError) {
+            console.log('WebGPU failed, falling back to CPU for embeddings:', webgpuError);
+            device = 'cpu';
+            embeddingPipeline = await pipeline(
+              'feature-extraction',
+              'Xenova/all-MiniLM-L6-v2',
+              { device: 'cpu' }
+            );
+            console.log('CPU embedding model loaded successfully');
           }
-
-          embeddingPipeline = await pipeline(
-            'feature-extraction',
-            'Xenova/all-MiniLM-L6-v2',
-            { device: 'webgpu' }
-          );
-          console.log('WebGPU embedding model loaded successfully');
-        } catch (webgpuError) {
-          console.log('WebGPU failed, falling back to CPU for embeddings:', webgpuError);
-          device = 'cpu';
+        } else {
           embeddingPipeline = await pipeline(
             'feature-extraction',
             'Xenova/all-MiniLM-L6-v2',
