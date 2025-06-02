@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Github, Linkedin, Mail, ExternalLink, Download, Phone, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ChatBot from "@/components/ChatBot";
 
 const Index = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -416,7 +417,7 @@ const Index = () => {
       </section>
 
       <section 
-        className="py-24 px-6 relative"
+        className="py-24 px-6 bg-gradient-to-br from-gray-50 to-yellow-50 relative"
         data-animate
         id="skills"
       >
@@ -549,6 +550,8 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <ChatBot />
 
       <footer className="py-12 px-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
