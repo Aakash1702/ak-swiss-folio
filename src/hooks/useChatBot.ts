@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { pipeline } from '@huggingface/transformers';
 
@@ -67,7 +68,7 @@ export const useChatBot = () => {
         console.log('Initializing AI models...');
         
         // Check WebGPU availability properly
-        const hasWebGPU = 'gpu' in navigator;
+        const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator;
         let device: 'webgpu' | 'cpu' = 'cpu';
         let embeddingPipeline = null;
         let generationPipeline = null;
@@ -162,17 +163,19 @@ export const useChatBot = () => {
 
   const findRelevantContext = async (query: string): Promise<string> => {
     if (!embedder || knowledgeBase.length === 0 || useSimpleMode) {
-      // Use keyword matching as fallback
+      // Use keyword matching as fallback but be more selective
       const lowerQuery = query.toLowerCase();
+      const queryWords = lowerQuery.split(' ').filter(word => word.length > 2);
+      
       const relevantItems = RESUME_DATA.filter(item => 
-        item.text.toLowerCase().includes(lowerQuery.split(' ')[0]) ||
-        lowerQuery.includes(item.category)
+        queryWords.some(word => item.text.toLowerCase().includes(word)) ||
+        queryWords.some(word => item.category.toLowerCase().includes(word))
       );
       
       if (relevantItems.length > 0) {
-        return relevantItems.slice(0, 3).map(item => item.text).join(' ');
+        return relevantItems.slice(0, 3).map(item => item.text).join('\n');
       }
-      return RESUME_DATA.slice(0, 4).map(item => item.text).join(' ');
+      return RESUME_DATA.slice(0, 2).map(item => item.text).join('\n');
     }
 
     try {
@@ -188,58 +191,70 @@ export const useChatBot = () => {
 
       const relevantItems = similarities
         .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, 4);
+        .slice(0, 3);
 
-      return relevantItems.map(item => item.text).join(' ');
+      return relevantItems.map(item => item.text).join('\n');
     } catch (error) {
       console.error('Error finding relevant context:', error);
-      return RESUME_DATA.slice(0, 4).map(item => item.text).join(' ');
+      return RESUME_DATA.slice(0, 2).map(item => item.text).join('\n');
     }
   };
 
   const generateSimpleResponse = (query: string, context: string): string => {
     const lowerQuery = query.toLowerCase();
     
-    // More intelligent keyword-based responses
-    if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job')) {
-      return "I have significant experience as a Data Scientist at Genpact working on Meta Platforms projects. I've successfully audited 400+ applications, built machine learning models achieving 78% violation detection rates, and developed data pipelines that improved system performance by 12%. My work involved technologies like Python, SQL, scikit-learn, PySpark, and Airflow.";
+    // Handle greetings naturally
+    if (lowerQuery.match(/^(hi|hello|hey|good morning|good afternoon|good evening)/)) {
+      return "Hello! I'm Aakash Kunarapu, a Data Scientist currently pursuing my Master's in Computer Science at Kent State University. I'd be happy to discuss my experience in machine learning, data analytics, or any of my projects. What would you like to know?";
     }
     
+    // Handle general questions about the person
+    if (lowerQuery.includes('who are you') || lowerQuery.includes('tell me about yourself') || lowerQuery.includes('introduce yourself')) {
+      return "I'm Aakash Kunarapu, a passionate Data Scientist with hands-on experience at Genpact working on Meta Platforms projects. I'm currently completing my Master's in Computer Science at Kent State University. My expertise spans machine learning, big data analytics, and building scalable data pipelines. I've successfully developed risk-scoring models that achieved 78% violation detection rates and built systems that improved platform performance by 12%. What specific aspects of my background interest you most?";
+    }
+    
+    // Handle experience questions with context
+    if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job') || lowerQuery.includes('career')) {
+      return "During my time at Genpact, I worked as a Data Scientist on Meta Platforms projects where I made significant contributions to platform security and compliance. I audited over 400 applications, designed machine learning models using scikit-learn that caught 78% of violations, and built robust PySpark data pipelines. One of my proudest achievements was reducing manual review hours by 25% while simultaneously improving first-time login success rates by 12% month-over-month. The role required deep expertise in Python, SQL, and working with large-scale data systems. What aspects of this experience would you like me to elaborate on?";
+    }
+    
+    // Handle education questions
     if (lowerQuery.includes('education') || lowerQuery.includes('degree') || lowerQuery.includes('university') || lowerQuery.includes('study')) {
-      return "I'm currently pursuing my M.S. in Computer Science at Kent State University, expecting to graduate in May 2025. My coursework focuses on advanced databases, machine learning, graph theory, and big data analytics. I previously completed my B.C.A. in Computer Applications from Kakatiya University in India in 2022.";
+      return "I'm currently pursuing my Master's in Computer Science at Kent State University, with an expected graduation in May 2025. My coursework focuses on cutting-edge areas like Advanced Databases, Machine Learning, Graph Theory, and Big Data Analytics. Prior to this, I completed my Bachelor's in Computer Applications from Kakatiya University in India. The combination of theoretical knowledge from my studies and practical experience from industry has given me a well-rounded perspective on data science and software development. Are there specific courses or academic projects you'd like to hear about?";
     }
     
-    if (lowerQuery.includes('skill') || lowerQuery.includes('technology') || lowerQuery.includes('programming') || lowerQuery.includes('language')) {
-      return "I'm proficient in Python, SQL, Java, and JavaScript. I have extensive experience with machine learning frameworks like scikit-learn and TensorFlow, big data technologies including Apache Spark and PySpark, and cloud platforms like AWS and GCP. I'm also skilled in data visualization using Tableau and Plotly, and DevOps tools like Docker and Kubernetes.";
+    // Handle technical skills
+    if (lowerQuery.includes('skill') || lowerQuery.includes('technology') || lowerQuery.includes('programming') || lowerQuery.includes('language') || lowerQuery.includes('tools')) {
+      return "I have a comprehensive technical toolkit spanning multiple domains. My core programming languages include Python, SQL, Java, and JavaScript. In the machine learning space, I'm proficient with scikit-learn, TensorFlow, and specialized in NLP techniques like VADER sentiment analysis. For big data processing, I work extensively with Apache Spark, PySpark, and have experience with cloud platforms like AWS and GCP. I'm also skilled in data visualization using Tableau, Plotly, and various other tools. Additionally, I have DevOps experience with Docker, Kubernetes, and CI/CD pipelines. Which specific technology stack are you most interested in discussing?";
     }
     
+    // Handle project questions
     if (lowerQuery.includes('project')) {
-      return "I've worked on several impactful projects including sentiment analysis of airline reviews using VADER (analyzing 3,940+ reviews), network analysis of Marvel universe characters with 160,000+ interactions using NetworkX, healthcare analytics for sepsis detection using LSTM and gradient boosting models, and customer churn prediction achieving 93% accuracy with Random Forest and SHAP interpretation.";
+      return "I've worked on several impactful projects that showcase different aspects of data science. One notable project was analyzing over 3,900 Skytrax reviews for British Airways using VADER sentiment analysis, which revealed important insights about customer satisfaction patterns. I also conducted a fascinating network analysis of the Marvel Universe, analyzing 6,000+ characters and 160,000 interactions using NetworkX and community detection algorithms. In the healthcare domain, I developed an ensemble model for sepsis detection using LSTM and gradient boosting techniques on 40,000+ ICU records. Each project taught me something new about applying data science to real-world problems. Which type of project interests you most?";
     }
     
-    if (lowerQuery.includes('contact') || lowerQuery.includes('email') || lowerQuery.includes('phone') || lowerQuery.includes('reach')) {
-      return "You can reach me at aakashkunarapu17@gmail.com or call me at +1 330-281-0912. I'm currently located in Kent, OH. You can also connect with me on LinkedIn at https://www.linkedin.com/in/aakash-kunarapu-80a55424b/.";
+    // Handle contact/hiring questions
+    if (lowerQuery.includes('contact') || lowerQuery.includes('email') || lowerQuery.includes('phone') || lowerQuery.includes('reach') || lowerQuery.includes('hire') || lowerQuery.includes('available')) {
+      return "I'm actively seeking opportunities in data science and machine learning roles. You can reach me at aakashkunarapu17@gmail.com or call me at +1 330-281-0912. I'm currently based in Kent, OH, and I'm also available on LinkedIn. I'm particularly interested in roles that involve building scalable ML systems, working with large datasets, and solving complex business problems through data-driven insights. I'd love to discuss how my experience could contribute to your team's goals!";
     }
     
-    if (lowerQuery.includes('certification') || lowerQuery.includes('training')) {
-      return "I have several relevant certifications including Python for Data Science & Machine Learning Essential Training, British Airways Data Science Job Simulation, Big Data Analytics with Hadoop & Apache Spark, and Introduction to Prompt Engineering for Generative AI. These certifications complement my practical experience in data science and machine learning.";
+    // Handle questions about specific technologies mentioned in context
+    const contextLower = context.toLowerCase();
+    if (lowerQuery.includes('python') && contextLower.includes('python')) {
+      return "Python is my primary programming language for data science work. I've used it extensively for data analysis, machine learning model development, and building data pipelines. At Genpact, I leveraged Python for parsing OAuth logs, developing scikit-learn models, and automating various data processing tasks. I'm comfortable with libraries like pandas, numpy, scikit-learn, TensorFlow, and many others. Python's versatility makes it perfect for end-to-end data science workflows.";
     }
     
-    // Generate a contextual response based on the query
-    const contextWords = context.toLowerCase().split(' ');
-    const queryWords = query.toLowerCase().split(' ');
-    const matchingWords = queryWords.filter(word => contextWords.includes(word));
-    
-    if (matchingWords.length > 0) {
-      return `Based on my background in data science and machine learning, I can tell you that I have experience with ${matchingWords.join(', ')} among other technologies. I've worked extensively on data analysis, machine learning model development, and big data processing. My experience at Genpact involved building risk-scoring models and data pipelines that significantly improved system performance. Feel free to ask more specific questions about any aspect of my experience!`;
+    if (lowerQuery.includes('machine learning') || lowerQuery.includes('ml')) {
+      return "Machine learning is at the core of my expertise. I've built production-ready models including gradient-boosted risk-scoring systems that achieved 78% violation detection rates, LSTM networks for healthcare analytics, and ensemble methods for various prediction tasks. I'm experienced with both supervised and unsupervised learning techniques, feature engineering, model validation, and deployment. My approach always focuses on solving real business problems with measurable impact.";
     }
     
-    return `That's an interesting question! As a data scientist with experience in machine learning, Python, and big data analytics, I've worked on various challenging projects from sentiment analysis to network analysis and healthcare predictive modeling. My background includes both academic study at Kent State University and practical experience at Genpact working on Meta Platforms projects. What specific aspect of my experience would you like to know more about?`;
+    // Default conversational response
+    return `That's an interesting question! Based on my experience as a data scientist, I can share insights about ${lowerQuery.split(' ').slice(0, 3).join(' ')}. Having worked on projects ranging from large-scale platform compliance to healthcare analytics, I've gained valuable experience in applying data science to solve real-world challenges. My background includes both the technical depth from my Master's studies and practical experience from working at Genpact on Meta Platforms. What specific aspect would you like to explore further?`;
   };
 
   const generateResponse = async (userQuery: string): Promise<string> => {
     if (!isInitialized) {
-      return "I'm still initializing. Please try again in a moment.";
+      return "I'm still getting ready to chat. Please give me just a moment to initialize...";
     }
 
     try {
@@ -249,33 +264,34 @@ export const useChatBot = () => {
         return generateSimpleResponse(userQuery, context);
       }
 
-      const prompt = `Based on the following information about Aakash Kunarapu, provide a helpful and conversational response to the question. Be professional but friendly, and use the information provided as context.
+      const prompt = `You are Aakash Kunarapu responding to a question. Use the provided context about your background to give a helpful, conversational, and professional response. Be natural and personable while staying factual.
 
-Context: ${context}
+Background Context:
+${context}
 
 Question: ${userQuery}
 
-Response:`;
+Respond as Aakash in first person, being conversational and helpful:`;
 
       const response = await generator(prompt, {
-        max_length: 200,
-        temperature: 0.7,
+        max_length: 300,
+        temperature: 0.8,
         do_sample: true,
         top_p: 0.9,
-        num_return_sequences: 1
+        repetition_penalty: 1.1
       });
 
       let answer = response[0]?.generated_text || '';
-      answer = answer.replace(prompt, '').replace('Response:', '').trim();
+      answer = answer.replace(prompt, '').replace(/^Response[:\s]*/i, '').trim();
       
-      if (!answer || answer.length < 20) {
+      if (!answer || answer.length < 30) {
         return generateSimpleResponse(userQuery, context);
       }
 
       return answer;
     } catch (error) {
       console.error('Error generating response:', error);
-      const context = RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
+      const context = RESUME_DATA.slice(0, 2).map(item => item.text).join('\n');
       return generateSimpleResponse(userQuery, context);
     }
   };
