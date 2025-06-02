@@ -60,46 +60,87 @@ export const useChatBot = () => {
   const [generator, setGenerator] = useState<any>(null);
   const [knowledgeBase, setKnowledgeBase] = useState<KnowledgeBase[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [useSimpleMode, setUseSimpleMode] = useState(false);
 
   useEffect(() => {
     const initializeModels = async () => {
       try {
         console.log('Initializing AI models...');
         
-        // Initialize embedding model
-        const embeddingPipeline = await pipeline(
-          'feature-extraction',
-          'Xenova/all-MiniLM-L6-v2',
-          { device: 'webgpu' }
-        );
-        
-        // Initialize text generation model
-        const generationPipeline = await pipeline(
-          'text2text-generation',
-          'Xenova/flan-t5-small',
-          { device: 'webgpu' }
-        );
+        // Try WebGPU first, fallback to CPU
+        let device = 'webgpu';
+        let embeddingPipeline = null;
+        let generationPipeline = null;
+
+        try {
+          // Test WebGPU availability
+          if (!navigator.gpu) {
+            throw new Error('WebGPU not available');
+          }
+
+          embeddingPipeline = await pipeline(
+            'feature-extraction',
+            'Xenova/all-MiniLM-L6-v2',
+            { device: 'webgpu' }
+          );
+          console.log('WebGPU embedding model loaded successfully');
+        } catch (webgpuError) {
+          console.log('WebGPU failed, falling back to CPU for embeddings:', webgpuError);
+          device = 'cpu';
+          embeddingPipeline = await pipeline(
+            'feature-extraction',
+            'Xenova/all-MiniLM-L6-v2',
+            { device: 'cpu' }
+          );
+          console.log('CPU embedding model loaded successfully');
+        }
+
+        try {
+          generationPipeline = await pipeline(
+            'text2text-generation',
+            'Xenova/flan-t5-small',
+            { device: device }
+          );
+          console.log(`${device} generation model loaded successfully`);
+        } catch (genError) {
+          console.log('Text generation model failed, using simple mode:', genError);
+          setUseSimpleMode(true);
+        }
 
         setEmbedder(embeddingPipeline);
         setGenerator(generationPipeline);
 
         // Create embeddings for knowledge base
-        console.log('Creating embeddings for knowledge base...');
-        const embeddedKB = await Promise.all(
-          RESUME_DATA.map(async (item) => {
-            const embedding = await embeddingPipeline(item.text);
-            return {
-              ...item,
-              embedding: Array.from(embedding.data) as number[]
-            };
-          })
-        );
+        if (embeddingPipeline) {
+          console.log('Creating embeddings for knowledge base...');
+          const embeddedKB = await Promise.all(
+            RESUME_DATA.map(async (item) => {
+              try {
+                const result = await embeddingPipeline(item.text);
+                const embedding = Array.isArray(result.data) ? result.data : Array.from(result.data || []);
+                return {
+                  ...item,
+                  embedding: embedding as number[]
+                };
+              } catch (error) {
+                console.log('Error creating embedding for item:', error);
+                return { ...item, embedding: [] };
+              }
+            })
+          );
+          setKnowledgeBase(embeddedKB);
+          console.log('Knowledge base embeddings created successfully');
+        } else {
+          setKnowledgeBase(RESUME_DATA);
+        }
 
-        setKnowledgeBase(embeddedKB);
         setIsInitialized(true);
         console.log('AI models initialized successfully!');
       } catch (error) {
         console.error('Error initializing models:', error);
+        setUseSimpleMode(true);
+        setKnowledgeBase(RESUME_DATA);
+        setIsInitialized(true);
       }
     };
 
@@ -107,94 +148,130 @@ export const useChatBot = () => {
   }, []);
 
   const cosineSimilarity = (a: number[], b: number[]): number => {
-    const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
+    if (!a || !b || a.length === 0 || b.length === 0) return 0;
+    const dotProduct = a.reduce((sum, val, i) => sum + val * (b[i] || 0), 0);
     const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-    return dotProduct / (magnitudeA * magnitudeB);
+    return magnitudeA && magnitudeB ? dotProduct / (magnitudeA * magnitudeB) : 0;
   };
 
   const findRelevantContext = async (query: string): Promise<string> => {
-    if (!embedder || knowledgeBase.length === 0) {
-      // Return general overview if embeddings aren't ready
-      return RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
+    if (!embedder || knowledgeBase.length === 0 || useSimpleMode) {
+      // Use keyword matching as fallback
+      const lowerQuery = query.toLowerCase();
+      const relevantItems = RESUME_DATA.filter(item => 
+        item.text.toLowerCase().includes(lowerQuery.split(' ')[0]) ||
+        lowerQuery.includes(item.category)
+      );
+      
+      if (relevantItems.length > 0) {
+        return relevantItems.slice(0, 3).map(item => item.text).join(' ');
+      }
+      return RESUME_DATA.slice(0, 4).map(item => item.text).join(' ');
     }
 
     try {
-      const queryEmbedding = await embedder(query);
-      const queryVector = Array.from(queryEmbedding.data) as number[];
+      const queryResult = await embedder(query);
+      const queryVector = Array.isArray(queryResult.data) ? queryResult.data : Array.from(queryResult.data || []);
 
       const similarities = knowledgeBase.map((item) => ({
         ...item,
-        similarity: item.embedding ? cosineSimilarity(queryVector, item.embedding) : 0
+        similarity: item.embedding && item.embedding.length > 0 
+          ? cosineSimilarity(queryVector as number[], item.embedding) 
+          : 0
       }));
 
-      // Get top relevant items with lower threshold for more inclusive results
       const relevantItems = similarities
         .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, 5) // Get more context
-        .filter(item => item.similarity > 0.1); // Lower threshold
-
-      // If no relevant items found, return general overview
-      if (relevantItems.length === 0) {
-        return RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
-      }
+        .slice(0, 4);
 
       return relevantItems.map(item => item.text).join(' ');
     } catch (error) {
       console.error('Error finding relevant context:', error);
-      return RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
+      return RESUME_DATA.slice(0, 4).map(item => item.text).join(' ');
     }
   };
 
+  const generateSimpleResponse = (query: string, context: string): string => {
+    const lowerQuery = query.toLowerCase();
+    
+    // More intelligent keyword-based responses
+    if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job')) {
+      return "I have significant experience as a Data Scientist at Genpact working on Meta Platforms projects. I've successfully audited 400+ applications, built machine learning models achieving 78% violation detection rates, and developed data pipelines that improved system performance by 12%. My work involved technologies like Python, SQL, scikit-learn, PySpark, and Airflow.";
+    }
+    
+    if (lowerQuery.includes('education') || lowerQuery.includes('degree') || lowerQuery.includes('university') || lowerQuery.includes('study')) {
+      return "I'm currently pursuing my M.S. in Computer Science at Kent State University, expecting to graduate in May 2025. My coursework focuses on advanced databases, machine learning, graph theory, and big data analytics. I previously completed my B.C.A. in Computer Applications from Kakatiya University in India in 2022.";
+    }
+    
+    if (lowerQuery.includes('skill') || lowerQuery.includes('technology') || lowerQuery.includes('programming') || lowerQuery.includes('language')) {
+      return "I'm proficient in Python, SQL, Java, and JavaScript. I have extensive experience with machine learning frameworks like scikit-learn and TensorFlow, big data technologies including Apache Spark and PySpark, and cloud platforms like AWS and GCP. I'm also skilled in data visualization using Tableau and Plotly, and DevOps tools like Docker and Kubernetes.";
+    }
+    
+    if (lowerQuery.includes('project')) {
+      return "I've worked on several impactful projects including sentiment analysis of airline reviews using VADER (analyzing 3,940+ reviews), network analysis of Marvel universe characters with 160,000+ interactions using NetworkX, healthcare analytics for sepsis detection using LSTM and gradient boosting models, and customer churn prediction achieving 93% accuracy with Random Forest and SHAP interpretation.";
+    }
+    
+    if (lowerQuery.includes('contact') || lowerQuery.includes('email') || lowerQuery.includes('phone') || lowerQuery.includes('reach')) {
+      return "You can reach me at aakashkunarapu17@gmail.com or call me at +1 330-281-0912. I'm currently located in Kent, OH. You can also connect with me on LinkedIn at https://www.linkedin.com/in/aakash-kunarapu-80a55424b/.";
+    }
+    
+    if (lowerQuery.includes('certification') || lowerQuery.includes('training')) {
+      return "I have several relevant certifications including Python for Data Science & Machine Learning Essential Training, British Airways Data Science Job Simulation, Big Data Analytics with Hadoop & Apache Spark, and Introduction to Prompt Engineering for Generative AI. These certifications complement my practical experience in data science and machine learning.";
+    }
+    
+    // Generate a contextual response based on the query
+    const contextWords = context.toLowerCase().split(' ');
+    const queryWords = query.toLowerCase().split(' ');
+    const matchingWords = queryWords.filter(word => contextWords.includes(word));
+    
+    if (matchingWords.length > 0) {
+      return `Based on my background in data science and machine learning, I can tell you that I have experience with ${matchingWords.join(', ')} among other technologies. I've worked extensively on data analysis, machine learning model development, and big data processing. My experience at Genpact involved building risk-scoring models and data pipelines that significantly improved system performance. Feel free to ask more specific questions about any aspect of my experience!`;
+    }
+    
+    return `That's an interesting question! As a data scientist with experience in machine learning, Python, and big data analytics, I've worked on various challenging projects from sentiment analysis to network analysis and healthcare predictive modeling. My background includes both academic study at Kent State University and practical experience at Genpact working on Meta Platforms projects. What specific aspect of my experience would you like to know more about?`;
+  };
+
   const generateResponse = async (userQuery: string): Promise<string> => {
-    if (!generator || !isInitialized) {
+    if (!isInitialized) {
       return "I'm still initializing. Please try again in a moment.";
     }
 
     try {
       const context = await findRelevantContext(userQuery);
       
-      const prompt = `You are Aakash Kunarapu's AI assistant. Based on his background and experience, answer the following question in a professional, conversational manner as if you are representing him. Use the information provided but feel free to elaborate and be conversational.
+      if (useSimpleMode || !generator) {
+        return generateSimpleResponse(userQuery, context);
+      }
 
-Aakash's Background: ${context}
+      const prompt = `Based on the following information about Aakash Kunarapu, provide a helpful and conversational response to the question. Be professional but friendly, and use the information provided as context.
+
+Context: ${context}
 
 Question: ${userQuery}
 
-Answer:`;
+Response:`;
 
       const response = await generator(prompt, {
-        max_length: 150,
-        temperature: 0.8,
+        max_length: 200,
+        temperature: 0.7,
         do_sample: true,
-        top_p: 0.9
+        top_p: 0.9,
+        num_return_sequences: 1
       });
 
       let answer = response[0]?.generated_text || '';
+      answer = answer.replace(prompt, '').replace('Response:', '').trim();
       
-      // Clean up the response
-      answer = answer.replace(prompt, '').replace('Answer:', '').trim();
-      
-      if (!answer || answer.length < 15) {
-        // Enhanced fallback responses based on query content
-        const lowerQuery = userQuery.toLowerCase();
-        
-        if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job')) {
-          return "I have valuable experience as a Data Scientist at Genpact working on Meta Platforms projects. I've audited 400+ applications, built machine learning models that achieved 78% violation detection rates, and created data pipelines that improved system performance by 12%. My work involved Python, SQL, scikit-learn, and big data technologies like PySpark and Airflow.";
-        } else if (lowerQuery.includes('education') || lowerQuery.includes('degree') || lowerQuery.includes('university')) {
-          return "I'm currently pursuing my M.S. in Computer Science at Kent State University (graduating May 2025), focusing on advanced databases, machine learning, and big data analytics. I previously completed my B.C.A. in Computer Applications from Kakatiya University in India. My academic journey has given me a strong foundation in both theoretical concepts and practical applications.";
-        } else if (lowerQuery.includes('skill') || lowerQuery.includes('technology') || lowerQuery.includes('programming')) {
-          return "I'm proficient in multiple programming languages including Python, SQL, Java, and JavaScript. I have extensive experience with machine learning frameworks like scikit-learn and TensorFlow, big data tools like Apache Spark and PySpark, and visualization platforms like Tableau and Plotly. I'm also skilled in cloud technologies (AWS, GCP), containerization (Docker, Kubernetes), and data pipeline orchestration with Airflow.";
-        } else if (lowerQuery.includes('project')) {
-          return "I've worked on several impactful projects including sentiment analysis of airline reviews using VADER, network analysis of Marvel universe characters with 160,000+ interactions, healthcare analytics for sepsis detection using LSTM and gradient boosting, and customer churn prediction achieving 93% accuracy. Each project showcases different aspects of my data science and machine learning expertise.";
-        } else {
-          return `Based on my background in data science and machine learning, I'd be happy to discuss how my experience might relate to your question. I'm currently pursuing my M.S. in Computer Science while having practical experience at Genpact working on Meta Platforms projects. Feel free to ask me more specific questions about my technical skills, projects, or career journey!`;
-        }
+      if (!answer || answer.length < 20) {
+        return generateSimpleResponse(userQuery, context);
       }
 
       return answer;
     } catch (error) {
       console.error('Error generating response:', error);
-      return "Thanks for your question! I'm a data scientist with experience in machine learning, Python, and big data analytics. I've worked on various projects from sentiment analysis to network analysis and healthcare predictive modeling. Feel free to ask me more about my specific experiences or technical skills!";
+      const context = RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
+      return generateSimpleResponse(userQuery, context);
     }
   };
 
