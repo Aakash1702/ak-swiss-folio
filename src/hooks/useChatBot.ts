@@ -70,14 +70,14 @@ export const useChatBot = () => {
         const embeddingPipeline = await pipeline(
           'feature-extraction',
           'Xenova/all-MiniLM-L6-v2',
-          { device: 'cpu' }
+          { device: 'webgpu' }
         );
         
         // Initialize text generation model
         const generationPipeline = await pipeline(
           'text2text-generation',
           'Xenova/flan-t5-small',
-          { device: 'cpu' }
+          { device: 'webgpu' }
         );
 
         setEmbedder(embeddingPipeline);
@@ -90,7 +90,7 @@ export const useChatBot = () => {
             const embedding = await embeddingPipeline(item.text);
             return {
               ...item,
-              embedding: Array.from(embedding.data)
+              embedding: Array.from(embedding.data) as number[]
             };
           })
         );
@@ -118,7 +118,7 @@ export const useChatBot = () => {
 
     try {
       const queryEmbedding = await embedder(query);
-      const queryVector = Array.from(queryEmbedding.data);
+      const queryVector = Array.from(queryEmbedding.data) as number[];
 
       const similarities = knowledgeBase.map((item) => ({
         ...item,
