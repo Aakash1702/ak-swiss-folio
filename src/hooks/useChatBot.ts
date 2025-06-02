@@ -114,7 +114,10 @@ export const useChatBot = () => {
   };
 
   const findRelevantContext = async (query: string): Promise<string> => {
-    if (!embedder || knowledgeBase.length === 0) return '';
+    if (!embedder || knowledgeBase.length === 0) {
+      // Return general overview if embeddings aren't ready
+      return RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
+    }
 
     try {
       const queryEmbedding = await embedder(query);
@@ -125,15 +128,21 @@ export const useChatBot = () => {
         similarity: item.embedding ? cosineSimilarity(queryVector, item.embedding) : 0
       }));
 
+      // Get top relevant items with lower threshold for more inclusive results
       const relevantItems = similarities
         .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, 3)
-        .filter(item => item.similarity > 0.3);
+        .slice(0, 5) // Get more context
+        .filter(item => item.similarity > 0.1); // Lower threshold
+
+      // If no relevant items found, return general overview
+      if (relevantItems.length === 0) {
+        return RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
+      }
 
       return relevantItems.map(item => item.text).join(' ');
     } catch (error) {
       console.error('Error finding relevant context:', error);
-      return '';
+      return RESUME_DATA.slice(0, 3).map(item => item.text).join(' ');
     }
   };
 
@@ -145,46 +154,47 @@ export const useChatBot = () => {
     try {
       const context = await findRelevantContext(userQuery);
       
-      if (!context) {
-        return "I don't have specific information about that in Aakash's resume. Could you ask about his work experience, education, skills, or projects?";
-      }
+      const prompt = `You are Aakash Kunarapu's AI assistant. Based on his background and experience, answer the following question in a professional, conversational manner as if you are representing him. Use the information provided but feel free to elaborate and be conversational.
 
-      const prompt = `Based on the following information about Aakash Kunarapu: ${context}
+Aakash's Background: ${context}
 
 Question: ${userQuery}
 
-Please provide a professional and helpful response as if you are representing Aakash. Be conversational but professional.`;
+Answer:`;
 
       const response = await generator(prompt, {
-        max_length: 200,
-        temperature: 0.7,
-        do_sample: true
+        max_length: 150,
+        temperature: 0.8,
+        do_sample: true,
+        top_p: 0.9
       });
 
       let answer = response[0]?.generated_text || '';
       
       // Clean up the response
-      answer = answer.replace(prompt, '').trim();
+      answer = answer.replace(prompt, '').replace('Answer:', '').trim();
       
-      if (!answer || answer.length < 10) {
-        // Fallback response using the context directly
-        if (userQuery.toLowerCase().includes('experience') || userQuery.toLowerCase().includes('work')) {
-          return "Aakash has experience as a Data Scientist and Platform Compliance Analyst at Genpact working on Meta Platforms projects. He audited 400+ apps, built risk-scoring models that achieved 78% violation detection, and created PySpark pipelines that boosted login success by 12%. He's skilled in Python, SQL, machine learning, and data visualization.";
-        } else if (userQuery.toLowerCase().includes('education') || userQuery.toLowerCase().includes('degree')) {
-          return "Aakash is pursuing his M.S. in Computer Science from Kent State University (expected May 2025) with coursework in Advanced Databases, Machine Learning, Graph Theory, and Big Data Analytics. He previously completed his B.C.A. in Computer Applications from Kakatiya University, India in 2022.";
-        } else if (userQuery.toLowerCase().includes('skills') || userQuery.toLowerCase().includes('technologies')) {
-          return "Aakash is proficient in Python, SQL, Java, and JavaScript. He has extensive experience with big data tools like PySpark and Apache Spark, ML frameworks like scikit-learn and TensorFlow, visualization tools like Tableau and Plotly, and cloud platforms like AWS and GCP. He's also skilled in Docker, Kubernetes, and CI/CD practices.";
-        } else if (userQuery.toLowerCase().includes('projects')) {
-          return "Aakash has worked on several impressive projects including sentiment analysis of airline reviews, network analysis of Marvel universe characters, sepsis detection using ensemble methods, grid risk forecasting with Bayesian networks, and customer churn prediction with 93% accuracy using Random Forest and SHAP interpretation.";
+      if (!answer || answer.length < 15) {
+        // Enhanced fallback responses based on query content
+        const lowerQuery = userQuery.toLowerCase();
+        
+        if (lowerQuery.includes('experience') || lowerQuery.includes('work') || lowerQuery.includes('job')) {
+          return "I have valuable experience as a Data Scientist at Genpact working on Meta Platforms projects. I've audited 400+ applications, built machine learning models that achieved 78% violation detection rates, and created data pipelines that improved system performance by 12%. My work involved Python, SQL, scikit-learn, and big data technologies like PySpark and Airflow.";
+        } else if (lowerQuery.includes('education') || lowerQuery.includes('degree') || lowerQuery.includes('university')) {
+          return "I'm currently pursuing my M.S. in Computer Science at Kent State University (graduating May 2025), focusing on advanced databases, machine learning, and big data analytics. I previously completed my B.C.A. in Computer Applications from Kakatiya University in India. My academic journey has given me a strong foundation in both theoretical concepts and practical applications.";
+        } else if (lowerQuery.includes('skill') || lowerQuery.includes('technology') || lowerQuery.includes('programming')) {
+          return "I'm proficient in multiple programming languages including Python, SQL, Java, and JavaScript. I have extensive experience with machine learning frameworks like scikit-learn and TensorFlow, big data tools like Apache Spark and PySpark, and visualization platforms like Tableau and Plotly. I'm also skilled in cloud technologies (AWS, GCP), containerization (Docker, Kubernetes), and data pipeline orchestration with Airflow.";
+        } else if (lowerQuery.includes('project')) {
+          return "I've worked on several impactful projects including sentiment analysis of airline reviews using VADER, network analysis of Marvel universe characters with 160,000+ interactions, healthcare analytics for sepsis detection using LSTM and gradient boosting, and customer churn prediction achieving 93% accuracy. Each project showcases different aspects of my data science and machine learning expertise.";
         } else {
-          return `Based on Aakash's background: ${context.substring(0, 200)}... Feel free to ask more specific questions about his experience, education, skills, or projects!`;
+          return `Based on my background in data science and machine learning, I'd be happy to discuss how my experience might relate to your question. I'm currently pursuing my M.S. in Computer Science while having practical experience at Genpact working on Meta Platforms projects. Feel free to ask me more specific questions about my technical skills, projects, or career journey!`;
         }
       }
 
       return answer;
     } catch (error) {
       console.error('Error generating response:', error);
-      return "I'm having trouble processing your request right now. Please try asking about Aakash's work experience, education, technical skills, or projects.";
+      return "Thanks for your question! I'm a data scientist with experience in machine learning, Python, and big data analytics. I've worked on various projects from sentiment analysis to network analysis and healthcare predictive modeling. Feel free to ask me more about my specific experiences or technical skills!";
     }
   };
 
