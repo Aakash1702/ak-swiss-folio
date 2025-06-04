@@ -54,7 +54,6 @@ async function checkKnowledgeBase(supabase: any): Promise<boolean> {
 async function initializeKnowledgeBase(supabase: any): Promise<string> {
   console.log('Initializing knowledge base...');
   
-  // Sample resume chunks - in production, you'd parse a PDF
   const resumeChunks = [
     'Aakash Kunarapu is a Data Scientist and ML Engineer with M.S. Computer Science from Kent State University. He specializes in building high-throughput data pipelines and predictive models.',
     'Experience at Genpact (Meta Platforms) as Data Scientist / Platform Compliance Analyst from Jan 2023 – Jul 2023. Audited Facebook Login and Account Kit integrations for 400+ apps.',
@@ -68,7 +67,6 @@ async function initializeKnowledgeBase(supabase: any): Promise<string> {
     'Technical expertise in machine learning algorithms, statistical analysis, data visualization, feature engineering, and operational monitoring using Agile practices.'
   ];
 
-  // Generate embeddings and insert chunks
   for (let i = 0; i < resumeChunks.length; i++) {
     const content = resumeChunks[i];
     const embedding = await generateEmbedding(content);
@@ -107,7 +105,6 @@ async function searchSimilarChunks(supabase: any, queryEmbedding: number[], limi
 
 async function callOpenAI(messages: any[], openaiKey?: string) {
   if (!openaiKey) {
-    // Fallback to a simple response when no OpenAI key
     return "I'd be happy to help you learn more about Aakash's background and experience. Please ask me specific questions about his skills, projects, or work experience.";
   }
 
@@ -151,7 +148,6 @@ serve(async (req) => {
 
     const { query, history = [] }: RequestBody = await req.json()
 
-    // Check if knowledge base exists, initialize if needed
     const kbReady = await checkKnowledgeBase(supabaseClient);
     let initMessage = '';
     
@@ -160,24 +156,19 @@ serve(async (req) => {
       initMessage = await initializeKnowledgeBase(supabaseClient);
     }
 
-    // Generate embedding for the query
     console.log('Generating embedding for query:', query);
     const queryEmbedding = await generateEmbedding(query);
 
-    // Search for similar resume chunks
     console.log('Searching for similar chunks...');
     const similarChunks = await searchSimilarChunks(supabaseClient, queryEmbedding);
 
-    // Build context from chunks
     const context = similarChunks.map((chunk: any, index: number) => 
       `[C-${String(index + 1).padStart(2, '0')}] ${chunk.content}`
     ).join('\n\n');
 
-    // Build conversation history summary (last 3 turns)
     const recentHistory = history.slice(-6);
     const historyText = recentHistory.map(turn => `${turn.role.toUpperCase()}: ${turn.content}`).join('\n');
 
-    // Build system prompt
     const systemPrompt = `You are ResumeBot, a friendly career assistant for Aakash Kunarapu.
 
 INSTRUCTIONS:
@@ -199,13 +190,11 @@ ${context || 'No relevant context found'}`;
       { role: 'user', content: query }
     ];
 
-    // Get OpenAI key from secrets
     const openaiKey = Deno.env.get('OPENAI_KEY');
     
     console.log('Generating response...');
     const response = await callOpenAI(messages, openaiKey);
 
-    // Add chunk citations if context was found
     let finalResponse = response;
     if (similarChunks.length > 0) {
       const citations = similarChunks.map((_: any, index: number) => `C-${String(index + 1).padStart(2, '0')}`);

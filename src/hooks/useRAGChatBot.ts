@@ -34,7 +34,7 @@ export const useRAGChatBot = () => {
 
         const client = createClient(supabaseUrl, supabaseAnonKey);
         setSupabase(client);
-        setIsInitialized(true); // We'll check KB status on first query
+        setIsInitialized(true);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);
         setIsInitialized(false);
@@ -59,7 +59,7 @@ export const useRAGChatBot = () => {
         },
         body: JSON.stringify({
           query,
-          history: history.slice(-6) // Last 3 exchanges
+          history: history.slice(-6)
         }),
       });
 
