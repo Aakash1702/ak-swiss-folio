@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -10,7 +11,9 @@ interface RAGResponse {
   response: string;
   chunks_found: number;
   citations: string[];
-  error?: string; // Add optional error property
+  error?: string;
+  kb_ready?: boolean;
+  init_message?: string;
 }
 
 export const useRAGChatBot = () => {
@@ -20,7 +23,6 @@ export const useRAGChatBot = () => {
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
-        // Initialize Supabase client
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
         
@@ -32,30 +34,9 @@ export const useRAGChatBot = () => {
 
         const client = createClient(supabaseUrl, supabaseAnonKey);
         setSupabase(client);
-
-        // Check if embeddings are ready
-        const { data, error } = await client
-          .from('resume_chunks')
-          .select('id')
-          .not('embedding', 'is', null)
-          .limit(1);
-
-        if (error) {
-          console.error('Error checking embeddings:', error);
-          setIsInitialized(false);
-          return;
-        }
-
-        if (data && data.length > 0) {
-          console.log('RAG ChatBot initialized successfully');
-          setIsInitialized(true);
-        } else {
-          console.log('No embeddings found, triggering embedding process...');
-          // Trigger embedding process
-          await triggerEmbedding();
-        }
+        setIsInitialized(true); // We'll check KB status on first query
       } catch (error) {
-        console.error('Failed to initialize RAG ChatBot:', error);
+        console.error('Failed to initialize Supabase:', error);
         setIsInitialized(false);
       }
     };
@@ -63,31 +44,14 @@ export const useRAGChatBot = () => {
     initializeSupabase();
   }, []);
 
-  const triggerEmbedding = async () => {
-    try {
-      const response = await fetch('/functions/v1/embedResume', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Embedding result:', result);
-        setIsInitialized(true);
-      }
-    } catch (error) {
-      console.error('Error triggering embedding:', error);
-    }
-  };
-
   const generateResponse = async (query: string, history: ChatTurn[] = []): Promise<string> => {
     if (!supabase) {
       throw new Error('Supabase not initialized');
     }
 
     try {
+      console.log('Sending query to askResume:', query);
+      
       const response = await fetch('/functions/v1/askResume', {
         method: 'POST',
         headers: {
@@ -109,6 +73,10 @@ export const useRAGChatBot = () => {
         throw new Error(result.error);
       }
 
+      if (result.init_message) {
+        console.log('Knowledge base initialized:', result.init_message);
+      }
+
       console.log(`RAG response generated with ${result.chunks_found} relevant chunks`);
       return result.response;
     } catch (error) {
@@ -119,7 +87,6 @@ export const useRAGChatBot = () => {
 
   return {
     generateResponse,
-    isInitialized,
-    triggerEmbedding
+    isInitialized
   };
 };
