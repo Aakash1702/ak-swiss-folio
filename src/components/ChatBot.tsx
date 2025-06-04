@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
-import { useChatBot } from '@/hooks/useChatBot';
+import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
+import { useRAGChatBot } from '@/hooks/useRAGChatBot';
 
 interface Message {
   id: string;
@@ -19,7 +19,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm Aakash's AI assistant. Feel free to ask me anything about his experience, skills, projects, or background. How can I help you today?",
+      text: "Hi! I'm Aakash's AI assistant powered by advanced RAG technology. I can answer detailed questions about his experience, skills, projects, and background by intelligently searching through his resume. What would you like to know?",
       isUser: false,
       timestamp: new Date()
     }
@@ -28,7 +28,7 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  const { generateResponse, isInitialized } = useChatBot();
+  const { generateResponse, isInitialized, triggerEmbedding } = useRAGChatBot();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,8 +38,15 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
+  const getChatHistory = () => {
+    return messages.slice(1).map(msg => ({
+      role: msg.isUser ? 'user' as const : 'assistant' as const,
+      content: msg.text
+    }));
+  };
+
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading || !isInitialized) return;
+    if (!inputMessage.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -53,7 +60,19 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const response = await generateResponse(inputMessage);
+      if (!isInitialized) {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "I'm still initializing my knowledge base. Please wait a moment and try again.",
+          isUser: false,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, errorMessage]);
+        return;
+      }
+
+      const chatHistory = getChatHistory();
+      const response = await generateResponse(inputMessage, chatHistory);
       
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -67,7 +86,7 @@ const ChatBot = () => {
       console.error('Error generating response:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "I apologize, but I'm having trouble processing your request right now. Please try again in a moment.",
+        text: "I apologize, but I'm having trouble accessing my knowledge base right now. Please try again in a moment, or check if the Supabase integration is properly configured.",
         isUser: false,
         timestamp: new Date()
       };
@@ -84,6 +103,24 @@ const ChatBot = () => {
     }
   };
 
+  const handleInitializeEmbeddings = async () => {
+    setIsLoading(true);
+    try {
+      await triggerEmbedding();
+      const successMessage: Message = {
+        id: Date.now().toString(),
+        text: "Knowledge base initialization completed! You can now ask me detailed questions about Aakash's background.",
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, successMessage]);
+    } catch (error) {
+      console.error('Error initializing embeddings:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       {/* Floating Chat Button */}
@@ -92,9 +129,12 @@ const ChatBot = () => {
           <Button
             onClick={() => setIsOpen(true)}
             size="lg"
-            className="rounded-full w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-blue-500/25 animate-pulse"
+            className="rounded-full w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-blue-500/25 animate-pulse relative"
           >
             <MessageCircle className="w-8 h-8" />
+            {isInitialized && (
+              <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-yellow-400 animate-bounce" />
+            )}
           </Button>
         )}
       </div>
@@ -111,9 +151,12 @@ const ChatBot = () => {
                   <AvatarFallback>AK</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold text-sm">Aakash's AI Assistant</h3>
+                  <h3 className="font-semibold text-sm flex items-center gap-2">
+                    ResumeBot
+                    {isInitialized && <Sparkles className="w-3 h-3 text-yellow-400" />}
+                  </h3>
                   <p className="text-xs opacity-90">
-                    {isInitialized ? 'Online' : 'Initializing...'}
+                    {isInitialized ? 'RAG-Powered Assistant' : 'Initializing Knowledge Base...'}
                   </p>
                 </div>
               </div>
@@ -130,6 +173,22 @@ const ChatBot = () => {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {!isInitialized && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-yellow-800 mb-2">
+                  Knowledge base not ready. Initialize embeddings to enable RAG functionality.
+                </p>
+                <Button 
+                  size="sm" 
+                  onClick={handleInitializeEmbeddings}
+                  disabled={isLoading}
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                >
+                  Initialize Knowledge Base
+                </Button>
+              </div>
+            )}
+            
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -178,13 +237,13 @@ const ChatBot = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={isInitialized ? "Ask about Aakash's experience..." : "Initializing AI..."}
-                disabled={isLoading || !isInitialized}
+                placeholder={isInitialized ? "Ask about Aakash's experience..." : "Initialize knowledge base first..."}
+                disabled={isLoading}
                 className="flex-1"
               />
               <Button
                 onClick={handleSendMessage}
-                disabled={isLoading || !inputMessage.trim() || !isInitialized}
+                disabled={isLoading || !inputMessage.trim()}
                 size="sm"
                 className="bg-blue-600 hover:bg-blue-700"
               >
