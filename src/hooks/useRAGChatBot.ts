@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -11,6 +10,7 @@ interface RAGResponse {
   response: string;
   chunks_found: number;
   citations: string[];
+  error?: string; // Add optional error property
 }
 
 export const useRAGChatBot = () => {
