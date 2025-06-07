@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, Sparkles, Settings } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -81,6 +81,9 @@ Introduction to prompt engineering for generative AI.
 
 const GeminiChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini-api-key') || '');
+  const [tempApiKey, setTempApiKey] = useState(apiKey);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -92,8 +95,25 @@ const GeminiChatBot = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const saveApiKey = () => {
+    setApiKey(tempApiKey);
+    localStorage.setItem('gemini-api-key', tempApiKey);
+    setShowSettings(false);
+  };
+
   const handleAskResume = async () => {
     if (!inputMessage.trim() || isLoading) return;
+
+    if (!apiKey) {
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        text: "Please configure your Gemini API key first by clicking the settings button.",
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -134,7 +154,6 @@ const GeminiChatBot = () => {
         },
       };
 
-      const apiKey = "";
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const response = await fetch(apiUrl, {
@@ -152,8 +171,8 @@ const GeminiChatBot = () => {
           errorDetails = await response.text();
         }
 
-        if (response.status === 401) {
-          throw new Error(`Authentication failed (401). This typically means there's an issue with the API key or its configuration.`);
+        if (response.status === 401 || response.status === 403) {
+          throw new Error(`Authentication failed (${response.status}). Please check your API key.`);
         } else {
           throw new Error(`API error: ${response.status} - ${response.statusText}. Details: ${errorDetails}`);
         }
@@ -196,7 +215,7 @@ const GeminiChatBot = () => {
       console.error("Error generating answer:", error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Failed to get answer: ${error.message}. Please check your input and try again.`,
+        text: `Failed to get answer: ${error.message}. Please check your API key and try again.`,
         isUser: false,
         timestamp: new Date()
       };
@@ -245,16 +264,54 @@ const GeminiChatBot = () => {
                   <p className="text-xs opacity-90">Gemini-Powered Assistant</p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-white/20"
-              >
-                <X className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="text-white hover:bg-white/20"
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsOpen(false)}
+                  className="text-white hover:bg-white/20"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </div>
+
+          {showSettings && (
+            <div className="p-4 border-b bg-gray-50">
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Gemini API Key</label>
+                  <Input
+                    type="password"
+                    value={tempApiKey}
+                    onChange={(e) => setTempApiKey(e.target.value)}
+                    placeholder="Enter your Gemini API key"
+                    className="mt-1"
+                  />
+                </div>
+                <div className="flex space-x-2">
+                  <Button onClick={saveApiKey} size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    Save
+                  </Button>
+                  <Button onClick={() => setShowSettings(false)} variant="outline" size="sm">
+                    Cancel
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Get your API key from Google AI Studio
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
