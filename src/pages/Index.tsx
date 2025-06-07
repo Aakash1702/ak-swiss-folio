@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Github, Linkedin, Mail, ExternalLink, Download, Phone, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import ChatBot from "@/components/ChatBot";
+import GeminiChatBot from "@/components/GeminiChatBot";
 
 const Index = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -551,7 +551,7 @@ const Index = () => {
         </div>
       </section>
 
-      <ChatBot />
+      <GeminiChatBot />
 
       <footer className="py-12 px-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
