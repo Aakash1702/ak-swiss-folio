@@ -19,15 +19,24 @@ interface RAGResponse {
 export const useRAGChatBot = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [supabase, setSupabase] = useState<any>(null);
+  const [needsConfig, setNeedsConfig] = useState(false);
 
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        // First check environment variables
+        let supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        let supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        
+        // Fallback to localStorage if env vars not available
+        if (!supabaseUrl || !supabaseAnonKey) {
+          supabaseUrl = localStorage.getItem('VITE_SUPABASE_URL');
+          supabaseAnonKey = localStorage.getItem('VITE_SUPABASE_ANON_KEY');
+        }
         
         if (!supabaseUrl || !supabaseAnonKey) {
-          console.warn('Supabase credentials not found in environment variables');
+          console.warn('Supabase credentials not found');
+          setNeedsConfig(true);
           setIsInitialized(false);
           return;
         }
@@ -35,14 +44,27 @@ export const useRAGChatBot = () => {
         const client = createClient(supabaseUrl, supabaseAnonKey);
         setSupabase(client);
         setIsInitialized(true);
+        setNeedsConfig(false);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);
         setIsInitialized(false);
+        setNeedsConfig(true);
       }
     };
 
     initializeSupabase();
   }, []);
+
+  const updateCredentials = (url: string, key: string) => {
+    try {
+      const client = createClient(url, key);
+      setSupabase(client);
+      setIsInitialized(true);
+      setNeedsConfig(false);
+    } catch (error) {
+      console.error('Failed to update Supabase credentials:', error);
+    }
+  };
 
   const generateResponse = async (query: string, history: ChatTurn[] = []): Promise<string> => {
     if (!supabase) {
@@ -87,6 +109,8 @@ export const useRAGChatBot = () => {
 
   return {
     generateResponse,
-    isInitialized
+    isInitialized,
+    needsConfig,
+    updateCredentials
   };
 };
