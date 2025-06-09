@@ -162,51 +162,22 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Glass Background with Floating Elements */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div 
-          className="absolute w-96 h-96 glass-gradient-bg rounded-full blur-3xl animate-glass-float"
-          style={{
-            left: '10%',
-            top: '20%',
-          }}
-        />
-        <div 
-          className="absolute w-80 h-80 glass-gradient-bg rounded-full blur-3xl animate-glass-float"
-          style={{
-            right: '10%',
-            bottom: '20%',
-            animationDelay: '4s',
-          }}
-        />
-        <div 
-          className="absolute w-64 h-64 glass-gradient-bg rounded-full blur-3xl animate-glass-float"
-          style={{
-            left: '60%',
-            top: '50%',
-            animationDelay: '8s',
-          }}
-        />
-      </div>
-
-      {/* Glass Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 apple-transition ${
-        isScrolled ? 'glass-nav backdrop-blur-glass-lg' : 'bg-transparent'
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-background/95 backdrop-blur-sm border-b' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-semibold glass-text apple-hover cursor-pointer">AK</div>
+            <div className="text-xl font-semibold text-foreground">AK</div>
             <div className="hidden md:flex space-x-8">
-              {['About', 'Experience', 'Projects', 'Contact'].map((item, index) => (
+              {['About', 'Experience', 'Projects', 'Contact'].map((item) => (
                 <a 
                   key={item}
                   href={`#${item.toLowerCase()}`} 
-                  className="glass-text hover:glass-text apple-transition relative group apple-hover"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {item}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 apple-transition group-hover:w-full"></span>
                 </a>
               ))}
             </div>
@@ -214,308 +185,297 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section with Glass Effects */}
-      <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20 overflow-hidden relative">
-        <div className="w-full max-w-6xl mx-auto relative z-20">
+      {/* Hero Section */}
+      <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20">
+        <div className="w-full max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="space-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
+            <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] glass-text relative z-30">
-                  <span className="block glass-text font-semibold">Aakash</span>
-                  <span className="block font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight text-foreground">
+                  <span className="block font-semibold">Aakash</span>
+                  <span className="block font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                     Kunarapu
                   </span>
                 </h1>
-                <p className="text-xl md:text-2xl lg:text-3xl glass-text-muted max-w-2xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards] hover:glass-text apple-transition relative z-30">
+                <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-2xl">
                   M.S. Computer Science Grad @ Kent State University
                 </p>
-                <p className="text-lg md:text-xl glass-text-muted max-w-xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards] hover:glass-text apple-transition relative z-30">
+                <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
                   Data Scientist & ML Engineer architecting high-throughput pipelines and predictive models that transform raw data into strategic insights
                 </p>
               </div>
               
-              <div className="flex flex-wrap items-center gap-6 glass-text-muted transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards] relative z-30">
-                <div className="flex items-center space-x-2 hover:glass-text apple-transition apple-hover cursor-pointer">
-                  <MapPin className="w-5 h-5 animate-bounce" />
+              <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
+                <div className="flex items-center space-x-2">
+                  <MapPin className="w-5 h-5" />
                   <span className="text-lg">Kent, OH</span>
                 </div>
-                <div className="flex items-center space-x-2 hover:glass-text apple-transition apple-hover cursor-pointer">
-                  <Phone className="w-5 h-5 animate-pulse" />
+                <div className="flex items-center space-x-2">
+                  <Phone className="w-5 h-5" />
                   <span className="text-lg">+1 330-281-0912</span>
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards] relative z-30">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg"
-                  className="glass-button bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white apple-transition apple-hover text-lg px-8 py-4 animate-glass-glow border-0"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-8 py-4"
                   onClick={handleDownloadResume}
                 >
-                  <Download className="w-5 h-5 mr-2 animate-bounce" />
+                  <Download className="w-5 h-5 mr-2" />
                   Download Resume
                 </Button>
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="glass-button border-2 border-blue-600/50 glass-text hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white apple-transition apple-hover text-lg px-8 py-4"
+                  className="border-2 border-blue-600/50 text-lg px-8 py-4"
                   onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
                 >
-                  <Mail className="w-5 h-5 mr-2 animate-pulse" />
+                  <Mail className="w-5 h-5 mr-2" />
                   Contact Me
                 </Button>
               </div>
               
-              <div className="flex space-x-6 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards] relative z-30">
-                <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="glass-text-muted hover:glass-text apple-transition apple-hover animate-float">
+              <div className="flex space-x-6">
+                <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors">
                   <Linkedin className="w-7 h-7" />
                 </a>
-                <a href="#" className="glass-text-muted hover:glass-text apple-transition apple-hover animate-float" style={{ animationDelay: '1s' }}>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   <Github className="w-7 h-7" />
                 </a>
-                <a href="mailto:aakashkunarapu17@gmail.com" className="glass-text-muted hover:glass-text apple-transition apple-hover animate-float" style={{ animationDelay: '2s' }}>
+                <a href="mailto:aakashkunarapu17@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors">
                   <Mail className="w-7 h-7" />
                 </a>
               </div>
             </div>
             
             <div className="flex justify-center lg:justify-end">
-              <div className="transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] relative z-30">
-                <div className="absolute inset-0 glass-gradient-bg rounded-full blur-2xl opacity-60 animate-pulse scale-110"></div>
-                <Avatar className="w-80 h-80 lg:w-96 lg:h-96 glass-surface p-1 apple-hover apple-transition animate-glass-float relative z-10">
-                  <div className="w-full h-full bg-white/10 rounded-full p-1 backdrop-blur-sm">
-                    <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" alt="Aakash Kunarapu" className="rounded-full" />
-                    <AvatarFallback className="text-6xl font-semibold glass-surface glass-text rounded-full">AK</AvatarFallback>
-                  </div>
-                </Avatar>
-              </div>
+              <Avatar className="w-80 h-80 lg:w-96 lg:h-96">
+                <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" alt="Aakash Kunarapu" />
+                <AvatarFallback className="text-6xl font-semibold">AK</AvatarFallback>
+              </Avatar>
             </div>
           </div>
         </div>
       </section>
 
-      {/* About Section with Glass Theme */}
+      {/* About Section */}
       <section 
         id="about" 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
       >
-        <div className={`max-w-4xl mx-auto apple-transition ${
+        <div className={`max-w-4xl mx-auto transition-all duration-700 ${
           visibleSections.has('about') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-12 glass-text">About</h2>
-          <div className="text-lg leading-relaxed space-y-6 glass-text-muted">
-            <div className="glass-card p-8 apple-hover apple-transition">
-              <p className="hover:glass-text apple-transition">
-                I'm <strong className="glass-text animate-pulse">Aakash Kunarapu</strong>, M.S. Computer Science Grad (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
+          <h2 className="text-3xl md:text-4xl font-light mb-12 text-foreground">About</h2>
+          <div className="text-lg leading-relaxed space-y-6 text-muted-foreground">
+            <Card className="p-8">
+              <p>
+                I'm <strong className="text-foreground">Aakash Kunarapu</strong>, M.S. Computer Science Grad (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
               </p>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Work Experience Section with Glass Cards */}
+      {/* Work Experience Section */}
       <section 
         id="experience" 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
       >
-        <div className={`max-w-6xl mx-auto apple-transition delay-200 ${
+        <div className={`max-w-6xl mx-auto transition-all duration-700 delay-200 ${
           visibleSections.has('experience') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 glass-text">Work Experience</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Work Experience</h2>
           <div className="space-y-8">
             {workExperience.map((job, index) => (
-              <div key={index} className="glass-card p-8 apple-hover apple-transition group">
+              <Card key={index} className="p-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-semibold glass-text group-hover:text-blue-400 apple-transition">{job.title}</h3>
-                    <p className="text-blue-400 font-medium group-hover:animate-pulse">{job.company}</p>
+                    <h3 className="text-xl font-semibold text-foreground">{job.title}</h3>
+                    <p className="text-blue-600 font-medium">{job.company}</p>
                   </div>
-                  <Badge className="glass-badge w-fit mt-2 md:mt-0 group-hover:scale-110 apple-transition">{job.period}</Badge>
+                  <Badge className="w-fit mt-2 md:mt-0">{job.period}</Badge>
                 </div>
-                <ul className="glass-text-muted space-y-3 mb-6">
+                <ul className="text-muted-foreground space-y-3 mb-6">
                   {job.achievements.map((achievement, i) => (
-                    <li key={i} className="leading-relaxed hover:glass-text apple-transition hover:pl-4 hover:border-l-4 hover:border-blue-400/50 p-2 rounded">• {achievement}</li>
+                    <li key={i} className="leading-relaxed">• {achievement}</li>
                   ))}
                 </ul>
                 <div className="flex flex-wrap gap-2">
                   {job.tech.map((tech) => (
-                    <Badge key={tech} className="glass-badge hover:scale-110 apple-hover apple-transition cursor-pointer">{tech}</Badge>
+                    <Badge key={tech} variant="secondary">{tech}</Badge>
                   ))}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Education Section with Glass Theme */}
+      {/* Education Section */}
       <section 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
         id="education"
       >
-        <div className={`max-w-6xl mx-auto apple-transition delay-300 ${
+        <div className={`max-w-6xl mx-auto transition-all duration-700 delay-300 ${
           visibleSections.has('education') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 glass-text">Education</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Education</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="glass-card p-8 apple-hover apple-transition group">
-              <h3 className="text-xl font-semibold mb-2 glass-text group-hover:text-blue-400 apple-transition">Kent State University, OH</h3>
-              <p className="text-blue-400 font-medium mb-4 group-hover:animate-pulse">M.S. in Computer Science</p>
-              <p className="glass-text-muted mb-4 group-hover:glass-text apple-transition">Expected: May 2025</p>
-              <div className="space-y-1 text-sm glass-text-muted">
+            <Card className="p-8">
+              <h3 className="text-xl font-semibold mb-2 text-foreground">Kent State University, OH</h3>
+              <p className="text-blue-600 font-medium mb-4">M.S. in Computer Science</p>
+              <p className="text-muted-foreground mb-4">Expected: May 2025</p>
+              <div className="space-y-1 text-sm text-muted-foreground">
                 <p><strong>Key Courses:</strong></p>
-                <p className="hover:glass-text apple-transition apple-hover">Advanced Databases, Machine Learning, Graph Theory, Big Data Analytics</p>
+                <p>Advanced Databases, Machine Learning, Graph Theory, Big Data Analytics</p>
               </div>
-            </div>
-            <div className="glass-card p-8 apple-hover apple-transition group">
-              <h3 className="text-xl font-semibold mb-2 glass-text group-hover:text-purple-400 apple-transition">Kakatiya University, Warangal, TG</h3>
-              <p className="text-purple-400 font-medium mb-4 group-hover:animate-pulse">B.C.A. in Computer Applications</p>
-              <p className="glass-text-muted mb-4 group-hover:glass-text apple-transition">May 2022</p>
-            </div>
+            </Card>
+            <Card className="p-8">
+              <h3 className="text-xl font-semibold mb-2 text-foreground">Kakatiya University, Warangal, TG</h3>
+              <p className="text-purple-600 font-medium mb-4">B.C.A. in Computer Applications</p>
+              <p className="text-muted-foreground mb-4">May 2022</p>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Projects Section with Glass Cards */}
+      {/* Projects Section */}
       <section 
         id="projects" 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
       >
-        <div className={`max-w-6xl mx-auto apple-transition delay-400 ${
+        <div className={`max-w-6xl mx-auto transition-all duration-700 delay-400 ${
           visibleSections.has('projects') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 glass-text">Project Experience</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Project Experience</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              <div key={index} className="glass-card p-8 apple-hover apple-transition group">
+              <Card key={index} className="p-8">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold glass-text group-hover:text-green-400 apple-transition">{project.title}</h3>
+                    <h3 className="text-xl font-semibold text-foreground">{project.title}</h3>
                     {project.subtitle && (
-                      <p className="text-sm text-blue-400 font-medium mt-1 group-hover:animate-pulse">{project.subtitle}</p>
+                      <p className="text-sm text-blue-600 font-medium mt-1">{project.subtitle}</p>
                     )}
                   </div>
-                  <ExternalLink className="w-5 h-5 glass-text-muted hover:text-green-400 apple-transition cursor-pointer apple-hover" />
+                  <ExternalLink className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
                 </div>
-                <p className="glass-text-muted mb-6 leading-relaxed hover:glass-text apple-transition">{project.description}</p>
+                <p className="text-muted-foreground mb-6 leading-relaxed">{project.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
-                    <Badge key={tech} className="glass-badge hover:scale-110 apple-hover apple-transition cursor-pointer">{tech}</Badge>
+                    <Badge key={tech} variant="secondary">{tech}</Badge>
                   ))}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Skills Section with Glass Theme */}
+      {/* Skills Section */}
       <section 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
         id="skills"
       >
-        <div className={`max-w-6xl mx-auto apple-transition delay-500 ${
+        <div className={`max-w-6xl mx-auto transition-all duration-700 delay-500 ${
           visibleSections.has('skills') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 glass-text">Skills & Tools</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Skills & Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {Object.entries(skills).map(([category, items], categoryIndex) => (
-              <div key={category} className={`glass-card p-6 apple-hover apple-transition ${
+              <Card key={category} className={`p-6 transition-all duration-700 ${
                 visibleSections.has('skills') 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-8'
               }`} style={{ transitionDelay: `${categoryIndex * 0.1}s` }}>
-                <h3 className="text-lg font-semibold mb-4 glass-text hover:text-blue-400 apple-transition cursor-default">{category}</h3>
+                <h3 className="text-lg font-semibold mb-4 text-foreground">{category}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {items.map((skill, skillIndex) => (
-                    <Badge 
-                      key={skill} 
-                      className="glass-badge hover:scale-125 apple-hover apple-transition cursor-pointer animate-glass-float"
-                      style={{ animationDelay: `${skillIndex * 0.1}s` }}
-                    >
-                      {skill}
-                    </Badge>
+                  {items.map((skill) => (
+                    <Badge key={skill} variant="secondary">{skill}</Badge>
                   ))}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Certifications with Glass Cards */}
+      {/* Certifications */}
       <section 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
         id="certifications"
       >
-        <div className={`max-w-6xl mx-auto apple-transition delay-600 ${
+        <div className={`max-w-6xl mx-auto transition-all duration-700 delay-600 ${
           visibleSections.has('certifications') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 glass-text">Certifications</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Certifications</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {certifications.map((cert, index) => (
-              <div key={index} className="glass-card p-6 apple-hover apple-transition group">
-                <p className="font-medium glass-text group-hover:text-yellow-400 apple-transition">{cert}</p>
-              </div>
+              <Card key={index} className="p-6">
+                <p className="font-medium text-foreground">{cert}</p>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section with Glass Form */}
+      {/* Contact Section */}
       <section 
         id="contact" 
-        className="py-24 px-6 relative"
+        className="py-24 px-6"
         data-animate
       >
-        <div className={`max-w-4xl mx-auto apple-transition delay-700 ${
+        <div className={`max-w-4xl mx-auto transition-all duration-700 delay-700 ${
           visibleSections.has('contact') 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-8'
         }`}>
-          <h2 className="text-3xl md:text-4xl font-light mb-16 glass-text">Contact</h2>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Contact</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
-              <h3 className="text-xl font-semibold mb-6 glass-text hover:text-blue-400 apple-transition">Get in touch</h3>
+              <h3 className="text-xl font-semibold mb-6 text-foreground">Get in touch</h3>
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 group hover:transform hover:translate-x-4 apple-transition glass-card p-3 cursor-pointer">
-                  <Mail className="w-5 h-5 text-blue-400 group-hover:scale-150 group-hover:animate-bounce apple-transition" />
-                  <a href="mailto:aakashkunarapu17@gmail.com" className="glass-text-muted hover:glass-text apple-transition">
+                <div className="flex items-center space-x-3">
+                  <Mail className="w-5 h-5 text-blue-600" />
+                  <a href="mailto:aakashkunarapu17@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors">
                     aakashkunarapu17@gmail.com
                   </a>
                 </div>
-                <div className="flex items-center space-x-3 group hover:transform hover:translate-x-4 apple-transition glass-card p-3 cursor-pointer">
-                  <Phone className="w-5 h-5 text-blue-400 group-hover:scale-150 group-hover:animate-bounce apple-transition" />
-                  <a href="tel:+13302810912" className="glass-text-muted hover:glass-text apple-transition">
+                <div className="flex items-center space-x-3">
+                  <Phone className="w-5 h-5 text-blue-600" />
+                  <a href="tel:+13302810912" className="text-muted-foreground hover:text-foreground transition-colors">
                     +1 330-281-0912
                   </a>
                 </div>
-                <div className="flex items-center space-x-3 group hover:transform hover:translate-x-4 apple-transition glass-card p-3 cursor-pointer">
-                  <Linkedin className="w-5 h-5 text-blue-400 group-hover:scale-150 group-hover:animate-bounce apple-transition" />
-                  <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="glass-text-muted hover:glass-text apple-transition">
+                <div className="flex items-center space-x-3">
+                  <Linkedin className="w-5 h-5 text-blue-600" />
+                  <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors">
                     LinkedIn Profile
                   </a>
                 </div>
               </div>
             </div>
-            <div className="glass-card p-8 apple-hover apple-transition">
+            <Card className="p-8">
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div>
                   <Input 
@@ -523,7 +483,6 @@ const Index = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Your Name" 
-                    className="glass-input border-0 apple-transition" 
                     required
                   />
                 </div>
@@ -534,7 +493,6 @@ const Index = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Your Email" 
-                    className="glass-input border-0 apple-transition" 
                     required
                   />
                 </div>
@@ -545,30 +503,30 @@ const Index = () => {
                     onChange={handleInputChange}
                     placeholder="Your Message" 
                     rows={4} 
-                    className="glass-input border-0 apple-transition resize-none" 
+                    className="resize-none" 
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full glass-button bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 apple-transition apple-hover text-white border-0 animate-glass-glow">
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                   Send Message
                 </Button>
               </form>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
 
       <GeminiChatBot />
 
-      {/* Glass Footer */}
-      <footer className="py-12 px-6 glass-surface border-t border-white/10">
+      {/* Footer */}
+      <footer className="py-12 px-6 border-t">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <p className="glass-text-muted text-sm hover:glass-text apple-transition apple-hover">© 2025 Aakash Kunarapu. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">© 2025 Aakash Kunarapu. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="glass-text-muted hover:glass-text apple-transition apple-hover animate-glass-float">
+            <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors">
               <Linkedin className="w-5 h-5" />
             </a>
-            <a href="#" className="glass-text-muted hover:glass-text apple-transition apple-hover animate-glass-float" style={{ animationDelay: '1s' }}>
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
               <Github className="w-5 h-5" />
             </a>
           </div>

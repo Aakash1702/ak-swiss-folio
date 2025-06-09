@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -163,30 +164,30 @@ const GeminiChatBot = () => {
     }
   };
 
-  // Settings Panel with Glass Theme
+  // Settings Panel
   if (showSettings) {
     return (
-      <div className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center">
-        <div className="glass-card p-8 w-96 max-w-[90vw] relative">
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg p-8 w-96 max-w-[90vw] relative shadow-xl">
           <Button
             onClick={() => setShowSettings(false)}
             variant="ghost"
             size="sm"
-            className="absolute -top-2 -right-2 z-10 glass-button"
+            className="absolute -top-2 -right-2 z-10"
           >
             <X className="w-4 h-4" />
           </Button>
           
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-lg font-semibold glass-text mb-2">Configure Gemini API</h3>
-              <p className="text-sm glass-text-muted">
+              <h3 className="text-lg font-semibold mb-2">Configure Gemini API</h3>
+              <p className="text-sm text-muted-foreground">
                 Get your free API key from{' '}
                 <a 
                   href="https://aistudio.google.com/app/apikey" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 apple-transition"
+                  className="text-blue-600 hover:text-blue-500"
                 >
                   Google AI Studio
                 </a>
@@ -199,27 +200,25 @@ const GeminiChatBot = () => {
                 placeholder="Paste your Gemini API key here"
                 value={tempApiKey}
                 onChange={(e) => setTempApiKey(e.target.value)}
-                className="glass-input border-0"
               />
               
               <div className="flex gap-3">
                 <Button 
                   onClick={saveApiKey} 
-                  className="flex-1 glass-button bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                 >
                   Save API Key
                 </Button>
                 <Button 
                   onClick={() => setShowSettings(false)} 
-                  variant="outline" 
-                  className="glass-button border-white/20"
+                  variant="outline"
                 >
                   Cancel
                 </Button>
               </div>
             </div>
             
-            <div className="text-xs glass-text-muted text-center">
+            <div className="text-xs text-muted-foreground text-center">
               Your API key is stored locally and never shared.
             </div>
           </div>
@@ -230,37 +229,37 @@ const GeminiChatBot = () => {
 
   return (
     <>
-      {/* Glass Floating Button */}
+      {/* Floating Button */}
       <div className="fixed bottom-6 right-6 z-50">
         {!isOpen && (
           <Button
             onClick={() => setIsOpen(true)}
             size="lg"
-            className="rounded-full w-16 h-16 glass-surface border-0 apple-hover apple-transition animate-glass-glow relative"
+            className="rounded-full w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-blue-500/25 animate-pulse relative"
           >
-            <MessageCircle className="w-8 h-8 glass-text" />
+            <MessageCircle className="w-8 h-8" />
             <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-yellow-400 animate-bounce" />
           </Button>
         )}
       </div>
 
-      {/* Glass Chat Interface */}
+      {/* Chat Interface */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[500px] z-50 flex flex-col glass-surface rounded-2xl border border-white/20 backdrop-blur-glass-lg overflow-hidden apple-transition">
-          {/* Glass Header */}
-          <div className="p-4 border-b border-white/10 glass-gradient-bg">
+        <Card className="fixed bottom-6 right-6 w-96 h-[500px] z-50 flex flex-col shadow-2xl border-0 bg-white">
+          {/* Header */}
+          <div className="p-4 border-b bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Avatar className="w-8 h-8 glass-surface border border-white/20">
+                <Avatar className="w-8 h-8">
                   <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" />
-                  <AvatarFallback className="glass-text text-xs">AK</AvatarFallback>
+                  <AvatarFallback>AK</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold text-sm flex items-center gap-2 glass-text">
+                  <h3 className="font-semibold text-sm flex items-center gap-2">
                     ResumeBot
                     <Sparkles className="w-3 h-3 text-yellow-400" />
                   </h3>
-                  <p className="text-xs glass-text-muted">Gemini-Powered Assistant</p>
+                  <p className="text-xs opacity-90">Gemini-Powered Assistant</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -268,7 +267,7 @@ const GeminiChatBot = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowSettings(true)}
-                  className="glass-button p-2"
+                  className="text-white hover:bg-white/20"
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
@@ -276,7 +275,7 @@ const GeminiChatBot = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsOpen(false)}
-                  className="glass-button p-2"
+                  className="text-white hover:bg-white/20"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -284,41 +283,41 @@ const GeminiChatBot = () => {
             </div>
           </div>
 
-          {/* Glass Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-transparent">
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-xl apple-transition ${
+                  className={`max-w-[80%] p-3 rounded-lg ${
                     message.isUser
-                      ? 'glass-surface border border-blue-400/30 ml-4'
-                      : 'glass-surface border border-white/20 mr-4'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-900'
                   }`}
                 >
                   <div className="flex items-start space-x-2">
                     {!message.isUser && (
-                      <Bot className="w-4 h-4 mt-0.5 text-blue-400 flex-shrink-0" />
+                      <Bot className="w-4 h-4 mt-0.5 text-blue-600" />
                     )}
                     {message.isUser && (
-                      <User className="w-4 h-4 mt-0.5 glass-text flex-shrink-0" />
+                      <User className="w-4 h-4 mt-0.5" />
                     )}
-                    <p className="text-sm leading-relaxed glass-text">{message.text}</p>
+                    <p className="text-sm leading-relaxed">{message.text}</p>
                   </div>
                 </div>
               </div>
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="glass-surface p-3 rounded-xl border border-white/20 mr-4">
+                <div className="bg-gray-100 p-3 rounded-lg">
                   <div className="flex items-center space-x-2">
-                    <Bot className="w-4 h-4 text-blue-400" />
+                    <Bot className="w-4 h-4 text-blue-600" />
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 </div>
@@ -327,8 +326,8 @@ const GeminiChatBot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Glass Input Area */}
-          <div className="p-4 border-t border-white/10 glass-gradient-bg">
+          {/* Input Area */}
+          <div className="p-4 border-t">
             <div className="flex space-x-2">
               <Input
                 value={inputMessage}
@@ -336,19 +335,19 @@ const GeminiChatBot = () => {
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about Aakash's experience..."
                 disabled={isLoading}
-                className="flex-1 glass-input border-0"
+                className="flex-1"
               />
               <Button
                 onClick={handleSendMessage}
                 disabled={isLoading || !inputMessage.trim()}
                 size="sm"
-                className="glass-button bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 p-3"
+                className="bg-blue-600 hover:bg-blue-700"
               >
                 <Send className="w-4 h-4" />
               </Button>
             </div>
           </div>
-        </div>
+        </Card>
       )}
     </>
   );
