@@ -59,8 +59,8 @@ const Index = () => {
 
   const handleDownloadResume = () => {
     const link = document.createElement('a');
-    link.href = '/lovable-uploads/Aakash_Kunarapu.pdf';
-    link.download = 'Aakash_Kunarapu_Resume.pdf';
+    link.href = '/lovable-uploads/Aakash_Kunarapu_DS.pdf';
+    link.download = 'Aakash_Kunarapu_DS_Resume.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
