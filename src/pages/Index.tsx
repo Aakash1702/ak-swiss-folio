@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -178,10 +179,29 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div 
+          className="absolute w-96 h-96 rounded-full bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 blur-3xl animate-pulse"
+          style={{
+            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
+            transition: 'transform 0.5s ease-out'
+          }}
+        />
+        <div 
+          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 blur-2xl animate-pulse"
+          style={{
+            transform: `translate(${mousePosition.x * -0.01}px, ${mousePosition.y * -0.01}px)`,
+            transition: 'transform 0.3s ease-out',
+            animationDelay: '1s'
+          }}
+        />
+      </div>
+
       {/* Navigation */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/95 backdrop-blur-sm border-b' : 'bg-transparent'
+        isScrolled ? 'bg-background/95 backdrop-blur-sm border-b shadow-lg' : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -191,9 +211,10 @@ const Index = () => {
                 <a 
                   key={item}
                   href={`#${item.toLowerCase()}`} 
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-105 relative group"
                 >
                   {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
                 </a>
               ))}
             </div>
@@ -202,40 +223,40 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20">
+      <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20 relative">
         <div className="w-full max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="space-y-8">
+            <div className="space-y-8 animate-fade-in">
               <div className="space-y-6">
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight text-foreground">
-                  <span className="block font-semibold">Aakash</span>
-                  <span className="block font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <span className="block font-semibold transform transition-all duration-700 hover:scale-105">Aakash</span>
+                  <span className="block font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
                     Kunarapu
                   </span>
                 </h1>
-                <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-2xl">
+                <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-2xl animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   M.S. Computer Science Grad @ Kent State University
                 </p>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+                <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.4s' }}>
                   Data Scientist & ML Engineer architecting high-throughput pipelines and predictive models that transform raw data into strategic insights
                 </p>
               </div>
               
-              <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
-                <div className="flex items-center space-x-2">
+              <div className="flex flex-wrap items-center gap-6 text-muted-foreground animate-fade-in" style={{ animationDelay: '0.6s' }}>
+                <div className="flex items-center space-x-2 hover:scale-105 transition-transform duration-300">
                   <MapPin className="w-5 h-5" />
                   <span className="text-lg">Kent, OH</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 hover:scale-105 transition-transform duration-300">
                   <Phone className="w-5 h-5" />
                   <span className="text-lg">+1 330-281-0912</span>
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.8s' }}>
                 <Button 
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-8 py-4"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg px-8 py-4 transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25"
                   onClick={handleDownloadResume}
                 >
                   <Download className="w-5 h-5 mr-2" />
@@ -244,7 +265,7 @@ const Index = () => {
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="border-2 border-blue-600/50 text-lg px-8 py-4"
+                  className="border-2 border-blue-600/50 text-lg px-8 py-4 hover:bg-blue-600/10 transform transition-all duration-300 hover:scale-105 hover:border-blue-600"
                   onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
                 >
                   <Mail className="w-5 h-5 mr-2" />
@@ -252,21 +273,21 @@ const Index = () => {
                 </Button>
               </div>
               
-              <div className="flex space-x-6">
-                <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors">
+              <div className="flex space-x-6 animate-fade-in" style={{ animationDelay: '1s' }}>
+                <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-all duration-300 transform hover:scale-125 hover:rotate-12">
                   <Linkedin className="w-7 h-7" />
                 </a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-all duration-300 transform hover:scale-125 hover:rotate-12">
                   <Github className="w-7 h-7" />
                 </a>
-                <a href="mailto:aakashkunarapu17@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a href="mailto:aakashkunarapu17@gmail.com" className="text-muted-foreground hover:text-foreground transition-all duration-300 transform hover:scale-125 hover:rotate-12">
                   <Mail className="w-7 h-7" />
                 </a>
               </div>
             </div>
             
-            <div className="flex justify-center lg:justify-end">
-              <Avatar className="w-80 h-80 lg:w-96 lg:h-96">
+            <div className="flex justify-center lg:justify-end animate-fade-in" style={{ animationDelay: '0.5s' }}>
+              <Avatar className="w-80 h-80 lg:w-96 lg:h-96 ring-4 ring-gradient-to-r from-blue-600 to-purple-600 ring-offset-4 ring-offset-background transform transition-all duration-500 hover:scale-105 hover:rotate-2">
                 <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" alt="Aakash Kunarapu" />
                 <AvatarFallback className="text-6xl font-semibold">AK</AvatarFallback>
               </Avatar>
@@ -278,7 +299,7 @@ const Index = () => {
       {/* About Section */}
       <section 
         id="about" 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
       >
         <div className={`max-w-4xl mx-auto transition-all duration-700 ${
@@ -288,9 +309,9 @@ const Index = () => {
         }`}>
           <h2 className="text-3xl md:text-4xl font-light mb-12 text-foreground">About</h2>
           <div className="text-lg leading-relaxed space-y-6 text-muted-foreground">
-            <Card className="p-8">
+            <Card className="p-8 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 border-2 hover:border-blue-500/20">
               <p>
-                I'm <strong className="text-foreground">Aakash Kunarapu</strong>, M.S. Computer Science Grad (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
+                I'm <strong className="text-foreground bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Aakash Kunarapu</strong>, M.S. Computer Science Grad (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
               </p>
             </Card>
           </div>
@@ -300,7 +321,7 @@ const Index = () => {
       {/* Work Experience Section */}
       <section 
         id="experience" 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
       >
         <div className={`max-w-6xl mx-auto transition-all duration-700 delay-200 ${
@@ -311,22 +332,22 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Work Experience</h2>
           <div className="space-y-8">
             {workExperience.map((job, index) => (
-              <Card key={index} className="p-8">
+              <Card key={index} className="p-8 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-500 transform hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 border-2 hover:border-purple-500/20" style={{ animationDelay: `${index * 0.2}s` }}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                   <div>
                     <h3 className="text-xl font-semibold text-foreground">{job.title}</h3>
                     <p className="text-blue-600 font-medium">{job.company}</p>
                   </div>
-                  <Badge className="w-fit mt-2 md:mt-0">{job.period}</Badge>
+                  <Badge className="w-fit mt-2 md:mt-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-105 transition-transform duration-300">{job.period}</Badge>
                 </div>
                 <ul className="text-muted-foreground space-y-3 mb-6">
                   {job.achievements.map((achievement, i) => (
-                    <li key={i} className="leading-relaxed">• {achievement}</li>
+                    <li key={i} className="leading-relaxed hover:text-foreground transition-colors duration-300">• {achievement}</li>
                   ))}
                 </ul>
                 <div className="flex flex-wrap gap-2">
                   {job.tech.map((tech) => (
-                    <Badge key={tech} variant="secondary">{tech}</Badge>
+                    <Badge key={tech} variant="secondary" className="hover:scale-105 hover:bg-blue-500/20 transition-all duration-300">{tech}</Badge>
                   ))}
                 </div>
               </Card>
@@ -337,7 +358,7 @@ const Index = () => {
 
       {/* Education Section */}
       <section 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
         id="education"
       >
@@ -348,7 +369,7 @@ const Index = () => {
         }`}>
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Education</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="p-8">
+            <Card className="p-8 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-500 transform hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 border-2 hover:border-blue-500/20">
               <h3 className="text-xl font-semibold mb-2 text-foreground">Kent State University, OH</h3>
               <p className="text-blue-600 font-medium mb-4">M.S. in Computer Science</p>
               <p className="text-muted-foreground mb-4">Expected: May 2025</p>
@@ -357,7 +378,7 @@ const Index = () => {
                 <p>Advanced Databases, Machine Learning, Graph Theory, Big Data Analytics</p>
               </div>
             </Card>
-            <Card className="p-8">
+            <Card className="p-8 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-500 transform hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 border-2 hover:border-purple-500/20">
               <h3 className="text-xl font-semibold mb-2 text-foreground">Kakatiya University, Warangal, TG</h3>
               <p className="text-purple-600 font-medium mb-4">B.C.A. in Computer Applications</p>
               <p className="text-muted-foreground mb-4">May 2022</p>
@@ -369,7 +390,7 @@ const Index = () => {
       {/* Projects Section */}
       <section 
         id="projects" 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
       >
         <div className={`max-w-6xl mx-auto transition-all duration-700 delay-400 ${
@@ -380,20 +401,20 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Project Experience</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              <Card key={index} className="p-8">
+              <Card key={index} className="p-8 hover:shadow-xl hover:shadow-pink-500/10 transition-all duration-500 transform hover:-translate-y-2 hover:rotate-1 bg-gradient-to-br from-card to-card/50 border-2 hover:border-pink-500/20 group" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-foreground">{project.title}</h3>
+                    <h3 className="text-xl font-semibold text-foreground group-hover:text-blue-600 transition-colors duration-300">{project.title}</h3>
                     {project.subtitle && (
                       <p className="text-sm text-blue-600 font-medium mt-1">{project.subtitle}</p>
                     )}
                   </div>
-                  <ExternalLink className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer" />
+                  <ExternalLink className="w-5 h-5 text-muted-foreground hover:text-foreground transition-all duration-300 cursor-pointer transform group-hover:scale-125 group-hover:rotate-12" />
                 </div>
-                <p className="text-muted-foreground mb-6 leading-relaxed">{project.description}</p>
+                <p className="text-muted-foreground mb-6 leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">{project.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
-                    <Badge key={tech} variant="secondary">{tech}</Badge>
+                    <Badge key={tech} variant="secondary" className="hover:scale-105 hover:bg-pink-500/20 transition-all duration-300">{tech}</Badge>
                   ))}
                 </div>
               </Card>
@@ -404,7 +425,7 @@ const Index = () => {
 
       {/* Skills Section */}
       <section 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
         id="skills"
       >
@@ -416,15 +437,15 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Skills & Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {Object.entries(skills).map(([category, items], categoryIndex) => (
-              <Card key={category} className={`p-6 transition-all duration-700 ${
+              <Card key={category} className={`p-6 transition-all duration-700 hover:shadow-xl hover:shadow-blue-500/10 transform hover:-translate-y-2 hover:rotate-1 bg-gradient-to-br from-card to-card/50 border-2 hover:border-blue-500/20 ${
                 visibleSections.has('skills') 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-8'
               }`} style={{ transitionDelay: `${categoryIndex * 0.1}s` }}>
-                <h3 className="text-lg font-semibold mb-4 text-foreground">{category}</h3>
+                <h3 className="text-lg font-semibold mb-4 text-foreground bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {items.map((skill) => (
-                    <Badge key={skill} variant="secondary">{skill}</Badge>
+                    <Badge key={skill} variant="secondary" className="hover:scale-105 hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-purple-500/20 transition-all duration-300">{skill}</Badge>
                   ))}
                 </div>
               </Card>
@@ -435,7 +456,7 @@ const Index = () => {
 
       {/* Certifications */}
       <section 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
         id="certifications"
       >
@@ -447,8 +468,8 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Certifications</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {certifications.map((cert, index) => (
-              <Card key={index} className="p-6">
-                <p className="font-medium text-foreground">{cert}</p>
+              <Card key={index} className="p-6 hover:shadow-xl hover:shadow-green-500/10 transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-card to-card/50 border-2 hover:border-green-500/20" style={{ animationDelay: `${index * 0.1}s` }}>
+                <p className="font-medium text-foreground hover:text-green-600 transition-colors duration-300">{cert}</p>
               </Card>
             ))}
           </div>
@@ -458,7 +479,7 @@ const Index = () => {
       {/* Contact Section */}
       <section 
         id="contact" 
-        className="py-24 px-6"
+        className="py-24 px-6 relative"
         data-animate
       >
         <div className={`max-w-4xl mx-auto transition-all duration-700 delay-700 ${
@@ -468,30 +489,30 @@ const Index = () => {
         }`}>
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-foreground">Contact</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div>
+            <div className="space-y-8">
               <h3 className="text-xl font-semibold mb-6 text-foreground">Get in touch</h3>
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 hover:scale-105 transition-transform duration-300">
                   <Mail className="w-5 h-5 text-blue-600" />
-                  <a href="mailto:aakashkunarapu17@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors">
+                  <a href="mailto:aakashkunarapu17@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
                     aakashkunarapu17@gmail.com
                   </a>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 hover:scale-105 transition-transform duration-300">
                   <Phone className="w-5 h-5 text-blue-600" />
-                  <a href="tel:+13302810912" className="text-muted-foreground hover:text-foreground transition-colors">
+                  <a href="tel:+13302810912" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
                     +1 330-281-0912
                   </a>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 hover:scale-105 transition-transform duration-300">
                   <Linkedin className="w-5 h-5 text-blue-600" />
-                  <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors">
+                  <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors duration-300">
                     LinkedIn Profile
                   </a>
                 </div>
               </div>
             </div>
-            <Card className="p-8">
+            <Card className="p-8 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-500 transform hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 border-2 hover:border-blue-500/20">
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div>
                   <Input 
@@ -500,6 +521,7 @@ const Index = () => {
                     onChange={handleInputChange}
                     placeholder="Your Name" 
                     required
+                    className="transition-all duration-300 focus:scale-105"
                   />
                 </div>
                 <div>
@@ -510,6 +532,7 @@ const Index = () => {
                     onChange={handleInputChange}
                     placeholder="Your Email" 
                     required
+                    className="transition-all duration-300 focus:scale-105"
                   />
                 </div>
                 <div>
@@ -519,11 +542,11 @@ const Index = () => {
                     onChange={handleInputChange}
                     placeholder="Your Message" 
                     rows={4} 
-                    className="resize-none" 
+                    className="resize-none transition-all duration-300 focus:scale-105" 
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25">
                   Send Message
                 </Button>
               </form>
@@ -535,14 +558,14 @@ const Index = () => {
       <GeminiChatBot />
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t">
+      <footer className="py-12 px-6 border-t relative">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">© 2025 Aakash Kunarapu. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-muted-foreground hover:text-foreground transition-all duration-300 transform hover:scale-125 hover:rotate-12">
               <Linkedin className="w-5 h-5" />
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-all duration-300 transform hover:scale-125 hover:rotate-12">
               <Github className="w-5 h-5" />
             </a>
           </div>
