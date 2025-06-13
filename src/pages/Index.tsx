@@ -101,16 +101,32 @@ const Index = () => {
 
   const workExperience = [
     {
-      title: "Data Scientist / Platform Compliance Analyst",
-      company: "Genpact (Meta Platforms)",
-      period: "Jan 2023 – Jul 2023",
+      title: "Data Scientist",
+      company: "Genpact, Hyderabad, India",
+      period: "Jun 2022 – Jul 2023",
       achievements: [
-        "Audited Facebook Login and Account Kit integrations for 400+ apps, parsing OAuth logs and SDK telemetry with Python/SQL to surface infringements and map regional trends",
-        "Designed a gradient-boosted risk-scoring model (scikit-learn) using 25 features; top-20 list caught 78% of violations and cut manual review hours by 25%",
-        "Built PySpark pipelines in Airflow to ingest daily events into Redshift and power Tableau dashboards for near real-time compliance visibility",
-        "Guided 120 developer teams through remediation steps, boosting first-time-login success by 12% MoM"
+        "Trained gradient-boosted-tree risk model with 25 engineered signals achieving 0.87 F1-score, capturing 78% of high-risk cases and cutting manual review hours 25%",
+        "Designed daily ETL workflows (PySpark + Redshift) in Airflow, delivering sub-hourly audit-ready tables to BI tools",
+        "Re-wrote complex joins and window functions, slashing dashboard refresh latency 60% and reducing cloud costs by $4K/month",
+        "Audited 400+ product integrations across 9 regions, mining telemetry logs to surface UX and compliance gaps",
+        "Launched company-wide Tableau analytics layer for Product, Legal, and Engineering teams",
+        "Led workshops with 120 external dev teams; model-guided remediation boosted first-login success 12% MoM"
       ],
-      tech: ["Python", "SQL", "PySpark", "scikit-learn", "Airflow", "Redshift", "Tableau"]
+      tech: ["Python", "scikit-learn", "PySpark", "Redshift", "Airflow", "Tableau", "MLflow", "Docker", "AWS ECS"]
+    },
+    {
+      title: "Data Science Intern",
+      company: "Genpact, Hyderabad, India", 
+      period: "Jan 2022 – May 2022",
+      achievements: [
+        "Queried and cleaned 75K daily event records (PostgreSQL + Pandas) to uncover data-quality defects and user-journey drop-offs",
+        "Prototyped 25-feature store (time-series drift, error frequency, behavioral entropy) that powered production scoring model",
+        "Built interactive Tableau dashboard reducing triage lead-time from 3 days to 1 day",
+        "Authored PostgreSQL window-function queries for weekly retention cohorts; exposed 14% user drop-off in APAC region",
+        "Added Pandas/Pydantic checks to ETL prototype, cutting null-pointer exceptions 30% and raising pipeline reliability to 99.7%",
+        "Built parameterized SQL harness for authentication edge cases, reducing validation cycles from 1 day to 10 minutes"
+      ],
+      tech: ["PostgreSQL", "Pandas", "Tableau", "Pydantic", "SQL", "Python", "Data Analysis"]
     }
   ];
 
