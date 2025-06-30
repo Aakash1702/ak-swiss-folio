@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -119,21 +118,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50 font-sf-pro">
       {/* Premium Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
+      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Avatar className="w-10 h-10 ring-2 ring-blue-100">
+              <Avatar className="w-10 h-10 ring-2 ring-slate-200/60">
                 <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" />
-                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-semibold">AK</AvatarFallback>
+                <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white font-semibold">AK</AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold text-slate-900">
                   Aakash Kunarapu
                 </h1>
-                <p className="text-sm text-slate-600">Data Scientist & ML Engineer</p>
+                <p className="text-sm text-slate-600 font-medium">Data Scientist & ML Engineer</p>
               </div>
             </div>
             
@@ -142,8 +141,8 @@ const Index = () => {
                 {['about', 'experience', 'projects', 'skills'].map((section) => (
                   <NavigationMenuItem key={section}>
                     <NavigationMenuLink
-                      className={`${navigationMenuTriggerStyle()} transition-all duration-300 hover:bg-slate-100 hover:scale-105 ${
-                        activeSection === section ? 'bg-blue-50 text-blue-700 font-medium' : ''
+                      className={`${navigationMenuTriggerStyle()} transition-all duration-300 hover:bg-slate-100 hover:scale-105 font-medium ${
+                        activeSection === section ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-700'
                       }`}
                       onClick={() => scrollToSection(section)}
                     >
@@ -156,7 +155,7 @@ const Index = () => {
 
             <Button 
               onClick={() => window.open('/lovable-uploads/Aakash_Kunarapu_DS.pdf', '_blank')}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium"
             >
               <Download className="w-4 h-4 mr-2" />
               Resume
@@ -171,22 +170,20 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <div className="space-y-6">
-                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-full border border-blue-100">
-                  <Sparkles className="w-4 h-4 text-blue-600 mr-2" />
-                  <span className="text-sm font-medium text-blue-700">Available for Opportunities</span>
+                <div className="inline-flex items-center px-4 py-2 bg-slate-100 rounded-full border border-slate-200">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
+                  <span className="text-sm font-medium text-slate-700">Available for Opportunities</span>
                 </div>
                 
-                <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                  <span className="bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                    Transforming Data into
-                  </span>
+                <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-slate-900">
+                  Transforming Data into
                   <br />
-                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-slate-600 to-slate-900 bg-clip-text text-transparent">
                     Intelligent Solutions
                   </span>
                 </h1>
                 
-                <p className="text-xl text-slate-600 leading-relaxed max-w-2xl">
+                <p className="text-xl text-slate-600 leading-relaxed max-w-2xl font-medium">
                   Data Scientist and ML Engineer passionate about leveraging advanced analytics 
                   and machine learning to solve complex business challenges and drive innovation.
                 </p>
@@ -195,7 +192,7 @@ const Index = () => {
               <div className="flex flex-wrap gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                  className="bg-slate-900 hover:bg-slate-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-medium"
                   onClick={() => scrollToSection('projects')}
                 >
                   <Star className="w-5 h-5 mr-2" />
@@ -204,7 +201,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-slate-300 hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 hover:scale-105"
+                  className="border-slate-300 hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 hover:scale-105 font-medium"
                   onClick={() => scrollToSection('about')}
                 >
                   Learn More
@@ -214,7 +211,7 @@ const Index = () => {
 
               <div className="flex items-center space-x-6 pt-4">
                 <div className="flex items-center text-slate-600">
-                  <MapPin className="w-5 h-5 mr-2 text-blue-600" />
+                  <MapPin className="w-5 h-5 mr-2 text-slate-700" />
                   <span className="font-medium">Kent, OH</span>
                 </div>
                 <div className="flex space-x-4">
@@ -234,35 +231,35 @@ const Index = () => {
             <div className="relative">
               <div className="relative z-10">
                 <div className="w-80 h-80 mx-auto relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full opacity-20 animate-pulse"></div>
-                  <div className="absolute inset-4 bg-gradient-to-br from-blue-500 to-purple-700 rounded-full opacity-30 animate-pulse delay-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-400 rounded-full opacity-20 animate-pulse"></div>
+                  <div className="absolute inset-4 bg-gradient-to-br from-slate-300 to-slate-500 rounded-full opacity-30 animate-pulse delay-300"></div>
                   <Avatar className="w-72 h-72 mx-auto mt-4 ring-4 ring-white shadow-2xl">
                     <AvatarImage 
                       src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" 
                       className="object-cover"
                     />
-                    <AvatarFallback className="text-6xl bg-gradient-to-br from-blue-600 to-purple-600 text-white">
+                    <AvatarFallback className="text-6xl bg-gradient-to-br from-slate-700 to-slate-900 text-white">
                       AK
                     </AvatarFallback>
                   </Avatar>
                 </div>
               </div>
               
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-yellow-200 to-orange-300 rounded-full opacity-60 animate-bounce"></div>
-              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-green-200 to-blue-300 rounded-full opacity-60 animate-bounce delay-500"></div>
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full opacity-60 animate-bounce"></div>
+              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-slate-300 to-slate-400 rounded-full opacity-60 animate-bounce delay-500"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-6 bg-gradient-to-r from-slate-50 to-blue-50/50">
+      <section id="about" className="py-20 px-6 bg-gradient-to-r from-slate-50 to-slate-100/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-4 text-slate-900">
               About Me
             </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
               Pursuing M.S. in Computer Science at Kent State University with a passion for 
               transforming complex data into actionable insights through advanced machine learning techniques.
             </p>
@@ -272,18 +269,18 @@ const Index = () => {
             <div className="space-y-6">
               <Card className="p-8 border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                 <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl flex items-center justify-center mr-4">
                     <Award className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-slate-900">Education</h3>
-                    <p className="text-slate-600">Academic Excellence</p>
+                    <p className="text-slate-600 font-medium">Academic Excellence</p>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+                  <div className="p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border border-slate-200">
                     <h4 className="font-semibold text-slate-900">M.S. Computer Science</h4>
-                    <p className="text-slate-700">Kent State University</p>
+                    <p className="text-slate-700 font-medium">Kent State University</p>
                     <p className="text-sm text-slate-600">Expected: May 2025</p>
                   </div>
                 </div>
@@ -291,17 +288,17 @@ const Index = () => {
 
               <Card className="p-8 border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                 <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center mr-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl flex items-center justify-center mr-4">
                     <Brain className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-slate-900">Expertise</h3>
-                    <p className="text-slate-600">Core Competencies</p>
+                    <p className="text-slate-600 font-medium">Core Competencies</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {["Machine Learning", "Data Engineering", "Deep Learning", "MLOps"].map((skill) => (
-                    <Badge key={skill} variant="secondary" className="justify-center py-2 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 transition-all duration-300">
+                    <Badge key={skill} variant="secondary" className="justify-center py-2 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 transition-all duration-300 font-medium">
                       {skill}
                     </Badge>
                   ))}
@@ -310,41 +307,41 @@ const Index = () => {
             </div>
 
             <div className="space-y-6">
-              <div className="p-8 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl text-white shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105">
+              <div className="p-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl text-white shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105">
                 <h3 className="text-2xl font-bold mb-4">Professional Impact</h3>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">10M+</div>
-                    <div className="text-blue-100">Records Processed</div>
+                    <div className="text-slate-300 font-medium">Records Processed</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">94%</div>
-                    <div className="text-blue-100">Model Accuracy</div>
+                    <div className="text-slate-300 font-medium">Model Accuracy</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">80%</div>
-                    <div className="text-blue-100">Efficiency Gain</div>
+                    <div className="text-slate-300 font-medium">Efficiency Gain</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold mb-2">1M+</div>
-                    <div className="text-blue-100">Daily Predictions</div>
+                    <div className="text-slate-300 font-medium">Daily Predictions</div>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-lg border border-slate-200">
-                <Mail className="w-6 h-6 text-blue-600" />
+                <Mail className="w-6 h-6 text-slate-700" />
                 <div>
                   <p className="font-semibold text-slate-900">aakashkunarapu17@gmail.com</p>
-                  <p className="text-sm text-slate-600">Let's connect and collaborate</p>
+                  <p className="text-sm text-slate-600 font-medium">Let's connect and collaborate</p>
                 </div>
               </div>
 
               <div className="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-lg border border-slate-200">
-                <Phone className="w-6 h-6 text-green-600" />
+                <Phone className="w-6 h-6 text-slate-700" />
                 <div>
                   <p className="font-semibold text-slate-900">+1 330-281-0912</p>
-                  <p className="text-sm text-slate-600">Available for discussions</p>
+                  <p className="text-sm text-slate-600 font-medium">Available for discussions</p>
                 </div>
               </div>
             </div>
@@ -518,12 +515,12 @@ const Index = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800">
+      <section className="py-20 px-6 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-white mb-6">
             Let's Build Something Amazing Together
           </h2>
-          <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium">
             Ready to leverage data science and machine learning to solve your toughest challenges? 
             Let's connect and explore possibilities.
           </p>
@@ -531,7 +528,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Button 
               size="lg" 
-              className="bg-white text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              className="bg-white text-slate-900 hover:bg-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-medium"
               onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
             >
               <Mail className="w-5 h-5 mr-2" />
@@ -540,7 +537,7 @@ const Index = () => {
             <Button 
               size="lg" 
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              className="border-white text-white hover:bg-white hover:text-slate-900 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-medium"
               onClick={() => window.open('/lovable-uploads/Aakash_Kunarapu_DS.pdf', '_blank')}
             >
               <Download className="w-5 h-5 mr-2" />
@@ -557,11 +554,11 @@ const Index = () => {
             <div className="flex items-center space-x-3 mb-6 md:mb-0">
               <Avatar className="w-10 h-10 ring-2 ring-slate-700">
                 <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" />
-                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-purple-600 text-white">AK</AvatarFallback>
+                <AvatarFallback className="bg-gradient-to-br from-slate-600 to-slate-800 text-white">AK</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-semibold">Aakash Kunarapu</p>
-                <p className="text-sm text-slate-400">Data Scientist & ML Engineer</p>
+                <p className="text-sm text-slate-400 font-medium">Data Scientist & ML Engineer</p>
               </div>
             </div>
             
@@ -581,7 +578,7 @@ const Index = () => {
           <Separator className="my-8 bg-slate-700" />
           
           <div className="text-center text-slate-400">
-            <p>&copy; {new Date().getFullYear()} Aakash Kunarapu. Crafted with passion for data science.</p>
+            <p className="font-medium">&copy; {new Date().getFullYear()} Aakash Kunarapu. Crafted with passion for data science.</p>
           </div>
         </div>
       </footer>
