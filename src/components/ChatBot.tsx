@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MessageCircle, X, Send, Bot, User, Sparkles, Settings } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
 import { useRAGChatBot } from '@/hooks/useRAGChatBot';
-import SupabaseConfig from './SupabaseConfig';
 
 interface Message {
   id: string;
@@ -17,7 +16,6 @@ interface Message {
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showConfig, setShowConfig] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -30,13 +28,7 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  const { generateResponse, isInitialized, needsConfig, updateCredentials } = useRAGChatBot();
-
-  useEffect(() => {
-    if (needsConfig && isOpen) {
-      setShowConfig(true);
-    }
-  }, [needsConfig, isOpen]);
+  const { generateResponse, isInitialized } = useRAGChatBot();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -51,11 +43,6 @@ const ChatBot = () => {
       role: msg.isUser ? 'user' as const : 'assistant' as const,
       content: msg.text
     }));
-  };
-
-  const handleConfigSaved = (url: string, key: string) => {
-    updateCredentials(url, key);
-    setShowConfig(false);
   };
 
   const handleSendMessage = async () => {
@@ -116,26 +103,9 @@ const ChatBot = () => {
     }
   };
 
-  if (showConfig) {
-    return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-        <div className="relative">
-          <Button
-            onClick={() => setShowConfig(false)}
-            variant="ghost"
-            size="sm"
-            className="absolute -top-2 -right-2 z-10 bg-white hover:bg-gray-100"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-          <SupabaseConfig onConfigSaved={handleConfigSaved} />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
+      {/* Floating Chat Button */}
       <div className="fixed bottom-6 right-6 z-50">
         {!isOpen && (
           <Button
@@ -151,8 +121,10 @@ const ChatBot = () => {
         )}
       </div>
 
+      {/* Chat Window */}
       {isOpen && (
         <Card className="fixed bottom-6 right-6 w-96 h-[500px] z-50 flex flex-col shadow-2xl border-0 bg-white">
+          {/* Header */}
           <div className="p-4 border-b bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -168,29 +140,18 @@ const ChatBot = () => {
                   <p className="text-xs opacity-90">RAG-Powered Assistant</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                {needsConfig && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowConfig(true)}
-                    className="text-white hover:bg-white/20"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsOpen(false)}
-                  className="text-white hover:bg-white/20"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+                className="text-white hover:bg-white/20"
+              >
+                <X className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 
+          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div
@@ -233,6 +194,7 @@ const ChatBot = () => {
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Input */}
           <div className="p-4 border-t">
             <div className="flex space-x-2">
               <Input

@@ -1,77 +1,119 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Download, 
-  ExternalLink, 
-  Github, 
-  Linkedin,
-  Code2,
-  Database,
-  Brain,
-  ChevronDown,
-  Star,
-  Calendar,
-  Building,
-  Award,
-  Sparkles
-} from 'lucide-react';
-import GeminiChatBot from '@/components/GeminiChatBot';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Github, Linkedin, Mail, ExternalLink, Download, Phone, MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import ChatBot from "@/components/ChatBot";
 
 const Index = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const { toast } = useToast();
 
   useEffect(() => {
-    setIsVisible(true);
-    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 50);
+      setScrollY(currentScrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Mouse tracking for interactive effects
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+            setVisibleSections(prev => new Set(prev).add(entry.target.id));
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.1 }
     );
 
-    const sections = document.querySelectorAll('section[id]');
+    const sections = document.querySelectorAll('[data-animate]');
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  const handleDownloadResume = () => {
+    const link = document.createElement('a');
+    link.href = '/lovable-uploads/Aakash_Kunarapu.pdf';
+    link.download = 'Aakash_Kunarapu_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  const experiences = [
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`Portfolio Contact from ${formData.name}`);
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
+    const mailtoLink = `mailto:aakashkunarapu17@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Open email client
+    window.location.href = mailtoLink;
+    
+    // Clear form and show success message
+    setFormData({ name: '', email: '', message: '' });
+    toast({
+      title: "Success",
+      description: "Your email client has been opened with the message. Please send the email to complete your message.",
+    });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const workExperience = [
     {
       title: "Data Scientist / Platform Compliance Analyst",
       company: "Genpact (Meta Platforms)",
       period: "Jan 2023 – Jul 2023",
-      location: "Remote",
       achievements: [
-        "Developed ML models for content moderation achieving 94% accuracy",
-        "Built automated data pipelines processing 10M+ records daily",
-        "Created real-time dashboards reducing manual reporting by 80%",
-        "Collaborated with cross-functional teams to optimize platform safety"
+        "Audited Facebook Login and Account Kit integrations for 400+ apps, parsing OAuth logs and SDK telemetry with Python/SQL to surface infringements and map regional trends",
+        "Designed a gradient-boosted risk-scoring model (scikit-learn) using 25 features; top-20 list caught 78% of violations and cut manual review hours by 25%",
+        "Built PySpark pipelines in Airflow to ingest daily events into Redshift and power Tableau dashboards for near real-time compliance visibility",
+        "Guided 120 developer teams through remediation steps, boosting first-time-login success by 12% MoM"
       ],
       tech: ["Python", "SQL", "PySpark", "scikit-learn", "Airflow", "Redshift", "Tableau"]
     }
@@ -79,336 +121,229 @@ const Index = () => {
 
   const projects = [
     {
-      title: "Advanced Sentiment Analysis Platform",
-      description: "Real-time sentiment analysis system with 92% accuracy using deep learning",
-      tech: ["Python", "TensorFlow", "NLP", "React", "Docker"],
-      features: ["Real-time processing", "Multi-language support", "Scalable architecture"],
-      impact: "Processed 1M+ social media posts daily"
+      title: "Skytrax Reviews Analysis",
+      subtitle: "British Airways Virtual Internship",
+      description: "Analyzed ~3,940 reviews with VADER sentiment analysis; uncovered 56% positive vs. 41% negative trends. Extracted themes (cabin crew service, premium economy) and recommended satisfaction improvements.",
+      tech: ["Python", "VADER", "Sentiment Analysis", "Data Analysis"]
     },
     {
-      title: "Network Analytics Engine",
-      description: "Graph-based analytics platform for social network analysis",
-      tech: ["Neo4j", "Python", "NetworkX", "D3.js", "FastAPI"],
-      features: ["Community detection", "Influence scoring", "Interactive visualization"],
-      impact: "Analyzed networks with 100K+ nodes"
+      title: "Marvel Universe Network Analysis",
+      description: "NetworkX analysis of 6,000+ characters & 160,000 interactions; computed centrality and detected communities via Girvan–Newman. Built interactive Plotly & Matplotlib visuals to convey findings.",
+      tech: ["NetworkX", "Plotly", "Matplotlib", "Graph Theory", "Community Detection"]
     },
     {
-      title: "Sepsis Early Detection System",
-      description: "ML-powered healthcare system for early sepsis detection",
-      tech: ["Python", "Random Forest", "XGBoost", "Flask", "PostgreSQL"],
-      features: ["Real-time monitoring", "Risk stratification", "Clinical integration"],
-      impact: "Achieved 89% sensitivity in clinical trials"
+      title: "Sepsis Detection Ensemble",
+      description: "Developed LSTM-GBM stacking pipeline on 40,000+ ICU records; validated via AUC-ROC & F1-score.",
+      tech: ["LSTM", "Gradient Boosting", "TensorFlow", "Healthcare Analytics"]
     },
     {
-      title: "Bayesian Risk Modeling Suite",
-      description: "Comprehensive risk assessment platform using Bayesian methods",
-      tech: ["R", "Stan", "Shiny", "PostgreSQL", "Docker"],
-      features: ["Monte Carlo simulation", "Uncertainty quantification", "Interactive dashboards"],
-      impact: "Reduced prediction uncertainty by 35%"
+      title: "Bayesian Grid Risk Forecasting",
+      description: "Monte Carlo & Bayesian network models for grid stability; delivered stakeholder dashboards.",
+      tech: ["Bayesian Networks", "Monte Carlo", "Risk Analysis", "Dashboard Development"]
+    },
+    {
+      title: "Customer Churn Prediction",
+      description: "Random Forest model achieving 93% accuracy; applied SHAP for feature interpretation to drive production insights.",
+      tech: ["Random Forest", "SHAP", "Feature Engineering", "Production ML"]
     }
   ];
 
   const skills = {
-    "Programming": ["Python", "SQL", "Java", "JavaScript", "R", "Scala"],
-    "Machine Learning": ["scikit-learn", "TensorFlow", "PyTorch", "XGBoost", "Keras"],
-    "Big Data": ["PySpark", "Hadoop", "Kafka", "Airflow", "Databricks"],
-    "Databases": ["PostgreSQL", "MongoDB", "Redis", "Neo4j", "Snowflake"],
-    "Cloud & DevOps": ["AWS", "GCP", "Docker", "Kubernetes", "Jenkins"],
-    "Visualization": ["Tableau", "Power BI", "D3.js", "Plotly", "Matplotlib"]
+    "Languages": ["Python", "SQL", "Java", "JavaScript"],
+    "Big Data": ["PySpark", "Apache Spark", "Data Pipelines", "Redshift", "MongoDB"],
+    "ML & Statistics": ["scikit-learn", "TensorFlow", "NLP (VADER)", "Hypothesis Testing", "PCA"],
+    "Graph Analytics": ["NetworkX", "Gephi", "Connectivity Analysis"],
+    "Visualization": ["Tableau", "Plotly", "Matplotlib", "Power BI"],
+    "Dev & Deployment": ["Docker", "Kubernetes", "Airflow", "Git", "CI/CD"],
+    "Cloud & SaaS": ["AWS", "GCP", "Supabase", "Okta", "Slack"],
+    "Practices": ["Agile", "OOP", "Feature Engineering", "Operational Monitoring"]
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/50 font-sf-pro">
-      {/* Premium Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Avatar className="w-10 h-10 ring-2 ring-slate-200/60">
-                <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" />
-                <AvatarFallback className="bg-gradient-to-br from-slate-800 to-slate-900 text-white font-semibold">AK</AvatarFallback>
-              </Avatar>
-              <div>
-                <h1 className="text-xl font-bold text-slate-900">
-                  Aakash Kunarapu
-                </h1>
-                <p className="text-sm text-slate-600 font-medium">Data Scientist & ML Engineer</p>
-              </div>
-            </div>
-            
-            <NavigationMenu>
-              <NavigationMenuList className="space-x-2">
-                {['about', 'experience', 'projects', 'skills'].map((section) => (
-                  <NavigationMenuItem key={section}>
-                    <NavigationMenuLink
-                      className={`${navigationMenuTriggerStyle()} transition-all duration-300 hover:bg-slate-100 hover:scale-105 font-medium ${
-                        activeSection === section ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-700'
-                      }`}
-                      onClick={() => scrollToSection(section)}
-                    >
-                      {section.charAt(0).toUpperCase() + section.slice(1)}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+  const certifications = [
+    "Python for Data Science & Machine Learning Essential Training",
+    "British Airways Data Science Job Simulation",
+    "Big Data Analytics with Hadoop & Apache Spark",
+    "Introduction to Prompt Engineering for Generative AI"
+  ];
 
-            <Button 
-              onClick={() => window.open('/lovable-uploads/Aakash_Kunarapu_DS.pdf', '_blank')}
-              className="bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-medium"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Resume
-            </Button>
+  return (
+    <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
+      {/* Simple Background Effects - Non-intrusive */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {/* Subtle Ambient Gradient Orbs - Far in background */}
+        <div 
+          className="absolute w-96 h-96 bg-gradient-to-r from-blue-400/4 to-purple-400/4 rounded-full blur-3xl"
+          style={{
+            left: '10%',
+            top: '20%',
+            animation: 'pulse 12s ease-in-out infinite',
+          }}
+        />
+        <div 
+          className="absolute w-80 h-80 bg-gradient-to-r from-purple-400/4 to-pink-400/4 rounded-full blur-3xl"
+          style={{
+            right: '10%',
+            bottom: '20%',
+            animation: 'pulse 15s ease-in-out infinite',
+            animationDelay: '7s',
+          }}
+        />
+      </div>
+
+      {/* Navigation */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="text-xl font-semibold transform hover:scale-110 transition-transform duration-300 hover:rotate-3">AK</div>
+            <div className="hidden md:flex space-x-8">
+              {['About', 'Experience', 'Projects', 'Contact'].map((item, index) => (
+                <a 
+                  key={item}
+                  href={`#${item.toLowerCase()}`} 
+                  className="text-gray-600 hover:text-blue-600 transition-all duration-300 relative group transform hover:scale-105 hover:-translate-y-1"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  {item}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="hero" className="pt-32 pb-20 px-6">
-        <div className={`max-w-7xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
+      <section className="min-h-screen flex items-center px-4 sm:px-6 lg:px-8 pt-20 overflow-hidden relative">
+        <div className="w-full max-w-6xl mx-auto relative z-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="space-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
               <div className="space-y-6">
-                <div className="inline-flex items-center px-4 py-2 bg-slate-100 rounded-full border border-slate-200">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
-                  <span className="text-sm font-medium text-slate-700">Available for Opportunities</span>
-                </div>
-                
-                <h1 className="text-5xl lg:text-6xl font-bold leading-tight text-slate-900">
-                  Transforming Data into
-                  <br />
-                  <span className="bg-gradient-to-r from-slate-600 to-slate-900 bg-clip-text text-transparent">
-                    Intelligent Solutions
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-light leading-tight transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] text-gray-900 relative z-30">
+                  <span className="block text-gray-900 font-semibold">Aakash</span>
+                  <span className="block font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">
+                    Kunarapu
                   </span>
                 </h1>
-                
-                <p className="text-xl text-slate-600 leading-relaxed max-w-2xl font-medium">
-                  Data Scientist and ML Engineer passionate about leveraging advanced analytics 
-                  and machine learning to solve complex business challenges and drive innovation.
+                <p className="text-xl md:text-2xl lg:text-3xl text-gray-700 max-w-2xl transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards] hover:text-blue-600 transition-colors duration-500 relative z-30">
+                  M.S. Computer Science Grad @ Kent State University
+                </p>
+                <p className="text-lg md:text-xl text-gray-600 max-w-xl leading-relaxed transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.7s_forwards] hover:text-gray-700 transition-colors duration-300 relative z-30">
+                  Data Scientist & ML Engineer architecting high-throughput pipelines and predictive models that transform raw data into strategic insights
                 </p>
               </div>
-
-              <div className="flex flex-wrap gap-4">
-                <Button 
-                  size="lg" 
-                  className="bg-slate-900 hover:bg-slate-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-medium"
-                  onClick={() => scrollToSection('projects')}
-                >
-                  <Star className="w-5 h-5 mr-2" />
-                  View Projects
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-slate-300 hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 hover:scale-105 font-medium"
-                  onClick={() => scrollToSection('about')}
-                >
-                  Learn More
-                  <ChevronDown className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-
-              <div className="flex items-center space-x-6 pt-4">
-                <div className="flex items-center text-slate-600">
-                  <MapPin className="w-5 h-5 mr-2 text-slate-700" />
-                  <span className="font-medium">Kent, OH</span>
+              
+              <div className="flex flex-wrap items-center gap-6 text-gray-600 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards] relative z-30">
+                <div className="flex items-center space-x-2 hover:text-blue-600 transition-all duration-300 hover:scale-110 cursor-pointer">
+                  <MapPin className="w-5 h-5 animate-bounce" />
+                  <span className="text-lg">Kent, OH</span>
                 </div>
-                <div className="flex space-x-4">
-                  <Button variant="ghost" size="sm" className="hover:bg-slate-100 hover:scale-110 transition-all duration-300">
-                    <Mail className="w-5 h-5 text-slate-600" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="hover:bg-slate-100 hover:scale-110 transition-all duration-300">
-                    <Linkedin className="w-5 h-5 text-slate-600" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="hover:bg-slate-100 hover:scale-110 transition-all duration-300">
-                    <Github className="w-5 h-5 text-slate-600" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="relative z-10">
-                <div className="w-80 h-80 mx-auto relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-400 rounded-full opacity-20 animate-pulse"></div>
-                  <div className="absolute inset-4 bg-gradient-to-br from-slate-300 to-slate-500 rounded-full opacity-30 animate-pulse delay-300"></div>
-                  <Avatar className="w-72 h-72 mx-auto mt-4 ring-4 ring-white shadow-2xl">
-                    <AvatarImage 
-                      src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" 
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="text-6xl bg-gradient-to-br from-slate-700 to-slate-900 text-white">
-                      AK
-                    </AvatarFallback>
-                  </Avatar>
+                <div className="flex items-center space-x-2 hover:text-blue-600 transition-all duration-300 hover:scale-110 cursor-pointer">
+                  <Phone className="w-5 h-5 animate-pulse" />
+                  <span className="text-lg">+1 330-281-0912</span>
                 </div>
               </div>
               
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full opacity-60 animate-bounce"></div>
-              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-slate-300 to-slate-400 rounded-full opacity-60 animate-bounce delay-500"></div>
+              <div className="flex flex-col sm:flex-row gap-4 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards] relative z-30">
+                <Button 
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-2 text-lg px-8 py-4 animate-glow"
+                  onClick={handleDownloadResume}
+                >
+                  <Download className="w-5 h-5 mr-2 animate-bounce" />
+                  Download Resume
+                </Button>
+                <Button 
+                  size="lg"
+                  variant="outline" 
+                  className="border-2 border-blue-600 text-blue-600 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white hover:border-transparent transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 transform hover:-translate-y-2 text-lg px-8 py-4"
+                  onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
+                >
+                  <Mail className="w-5 h-5 mr-2 animate-pulse" />
+                  Contact Me
+                </Button>
+              </div>
+              
+              <div className="flex space-x-6 transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards] relative z-30">
+                <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-150 hover:rotate-12 animate-float">
+                  <Linkedin className="w-7 h-7" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-150 hover:rotate-12 animate-float" style={{ animationDelay: '1s' }}>
+                  <Github className="w-7 h-7" />
+                </a>
+                <a href="mailto:aakashkunarapu17@gmail.com" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-150 hover:rotate-12 animate-float" style={{ animationDelay: '2s' }}>
+                  <Mail className="w-7 h-7" />
+                </a>
+              </div>
+            </div>
+            
+            <div className="flex justify-center lg:justify-end">
+              <div className="transform translate-y-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] relative z-30">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-2xl opacity-20 animate-pulse scale-110"></div>
+                <Avatar className="w-80 h-80 lg:w-96 lg:h-96 border-4 border-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-1 hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/50 animate-float relative z-10">
+                  <div className="w-full h-full bg-white rounded-full p-1">
+                    <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" alt="Aakash Kunarapu" className="rounded-full" />
+                    <AvatarFallback className="text-6xl font-semibold bg-blue-50 text-blue-600 rounded-full">AK</AvatarFallback>
+                  </div>
+                </Avatar>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-6 bg-gradient-to-r from-slate-50 to-slate-100/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-slate-900">
-              About Me
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
-              Pursuing M.S. in Computer Science at Kent State University with a passion for 
-              transforming complex data into actionable insights through advanced machine learning techniques.
+      <section 
+        id="about" 
+        className="py-24 px-6 relative"
+        data-animate
+      >
+        <div className={`max-w-4xl mx-auto transition-all duration-1000 ${
+          visibleSections.has('about') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-12 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">About</h2>
+          <div className="text-lg leading-relaxed space-y-6 text-gray-700">
+            <p className="hover:text-gray-900 transition-all duration-300 hover:scale-105 transform hover:-translate-y-1 hover:shadow-lg hover:bg-blue-50 p-4 rounded-lg cursor-default">
+              I'm <strong className="text-blue-600 animate-pulse">Aakash Kunarapu</strong>, M.S. Computer Science Grad (Kent State University) and Data Scientist/ML Engineer who architects high-throughput data pipelines powering real-time compliance dashboards processing 5M+ events daily. I build predictive models that cut manual review effort by 25% and boost user success metrics by 12%. My work spans ensemble algorithms for early event detection in healthcare, sentiment mining of customer feedback, and graph-based community analysis at scale. I specialize in delivering production-grade AI systems that transform raw data into strategic insights and measurable business growth.
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <Card className="p-8 border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl flex items-center justify-center mr-4">
-                    <Award className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">Education</h3>
-                    <p className="text-slate-600 font-medium">Academic Excellence</p>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border border-slate-200">
-                    <h4 className="font-semibold text-slate-900">M.S. Computer Science</h4>
-                    <p className="text-slate-700 font-medium">Kent State University</p>
-                    <p className="text-sm text-slate-600">Expected: May 2025</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-8 border-0 shadow-xl bg-white/70 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-800 rounded-xl flex items-center justify-center mr-4">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">Expertise</h3>
-                    <p className="text-slate-600 font-medium">Core Competencies</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {["Machine Learning", "Data Engineering", "Deep Learning", "MLOps"].map((skill) => (
-                    <Badge key={skill} variant="secondary" className="justify-center py-2 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 transition-all duration-300 font-medium">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </Card>
-            </div>
-
-            <div className="space-y-6">
-              <div className="p-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl text-white shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105">
-                <h3 className="text-2xl font-bold mb-4">Professional Impact</h3>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold mb-2">10M+</div>
-                    <div className="text-slate-300 font-medium">Records Processed</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold mb-2">94%</div>
-                    <div className="text-slate-300 font-medium">Model Accuracy</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold mb-2">80%</div>
-                    <div className="text-slate-300 font-medium">Efficiency Gain</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold mb-2">1M+</div>
-                    <div className="text-slate-300 font-medium">Daily Predictions</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-lg border border-slate-200">
-                <Mail className="w-6 h-6 text-slate-700" />
-                <div>
-                  <p className="font-semibold text-slate-900">aakashkunarapu17@gmail.com</p>
-                  <p className="text-sm text-slate-600 font-medium">Let's connect and collaborate</p>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-lg border border-slate-200">
-                <Phone className="w-6 h-6 text-slate-700" />
-                <div>
-                  <p className="font-semibold text-slate-900">+1 330-281-0912</p>
-                  <p className="text-sm text-slate-600 font-medium">Available for discussions</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Experience Section */}
-      <section id="experience" className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
-              Professional Experience
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Delivering impactful data solutions at scale with cutting-edge technology
-            </p>
-          </div>
-
+      {/* Work Experience Section */}
+      <section 
+        id="experience" 
+        className="py-24 px-6 bg-gradient-to-br from-gray-50 to-blue-50 relative"
+        data-animate
+      >
+        <div className={`max-w-6xl mx-auto transition-all duration-1000 delay-200 ${
+          visibleSections.has('experience') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">Work Experience</h2>
           <div className="space-y-8">
-            {experiences.map((exp, index) => (
-              <Card key={index} className="p-8 border-0 shadow-xl bg-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                <div className="grid lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-1">
-                    <div className="flex items-start space-x-4 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <Building className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-1">{exp.title}</h3>
-                        <p className="text-lg font-semibold text-blue-600 mb-2">{exp.company}</p>
-                        <div className="flex items-center text-slate-600 mb-1">
-                          <Calendar className="w-4 h-4 mr-2" />
-                          <span className="text-sm">{exp.period}</span>
-                        </div>
-                        <div className="flex items-center text-slate-600">
-                          <MapPin className="w-4 h-4 mr-2" />
-                          <span className="text-sm">{exp.location}</span>
-                        </div>
-                      </div>
-                    </div>
+            {workExperience.map((job, index) => (
+              <Card key={index} className="p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 bg-white group hover:bg-gradient-to-br hover:from-white hover:to-blue-50 transform hover:scale-[1.02] hover:rotate-1 border-0 shadow-lg hover:shadow-blue-500/20">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-semibold group-hover:text-blue-600 transition-all duration-300 group-hover:scale-105">{job.title}</h3>
+                    <p className="text-blue-600 font-medium group-hover:animate-pulse">{job.company}</p>
                   </div>
-                  
-                  <div className="lg:col-span-2">
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold text-slate-900 mb-4">Key Achievements</h4>
-                      <ul className="space-y-3">
-                        {exp.achievements.map((achievement, idx) => (
-                          <li key={idx} className="flex items-start">
-                            <Star className="w-4 h-4 text-yellow-500 mr-3 mt-1 flex-shrink-0" />
-                            <span className="text-slate-700">{achievement}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-lg font-semibold text-slate-900 mb-4">Technologies Used</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {exp.tech.map((tech) => (
-                          <Badge key={tech} variant="secondary" className="bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 border border-blue-200 hover:from-blue-100 hover:to-purple-100 transition-all duration-300">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <Badge variant="outline" className="w-fit mt-2 md:mt-0 group-hover:border-blue-600 group-hover:text-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:animate-bounce">{job.period}</Badge>
+                </div>
+                <ul className="text-gray-600 space-y-3 mb-6">
+                  {job.achievements.map((achievement, i) => (
+                    <li key={i} className="leading-relaxed hover:text-gray-800 transition-all duration-300 hover:pl-4 hover:border-l-4 hover:border-blue-400 hover:bg-blue-50 p-2 rounded">• {achievement}</li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-2">
+                  {job.tech.map((tech) => (
+                    <Badge key={tech} variant="secondary" className="hover:bg-blue-100 hover:text-blue-700 transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-lg cursor-pointer hover:animate-pulse">{tech}</Badge>
+                  ))}
                 </div>
               </Card>
             ))}
@@ -416,56 +351,63 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="py-20 px-6 bg-gradient-to-br from-slate-50 to-blue-50/30">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
-              Featured Projects
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Innovative solutions combining machine learning, data engineering, and scalable architecture
-            </p>
+      <section 
+        className="py-24 px-6 relative"
+        data-animate
+        id="education"
+      >
+        <div className={`max-w-6xl mx-auto transition-all duration-1000 delay-300 ${
+          visibleSections.has('education') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">Education</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="p-8 hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 group hover:bg-gradient-to-br hover:from-white hover:to-blue-50 hover:rotate-1 border-0 shadow-lg hover:shadow-blue-500/20">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 transition-all duration-300 group-hover:scale-105">Kent State University, OH</h3>
+              <p className="text-blue-600 font-medium mb-4 group-hover:animate-pulse">M.S. in Computer Science</p>
+              <p className="text-gray-600 mb-4 group-hover:text-gray-800 transition-colors duration-300">Expected: May 2025</p>
+              <div className="space-y-1 text-sm text-gray-600">
+                <p><strong>Key Courses:</strong></p>
+                <p className="hover:text-gray-800 transition-colors duration-300 hover:scale-105">Advanced Databases, Machine Learning, Graph Theory, Big Data Analytics</p>
+              </div>
+            </Card>
+            <Card className="p-8 hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 group hover:bg-gradient-to-br hover:from-white hover:to-purple-50 hover:-rotate-1 border-0 shadow-lg hover:shadow-purple-500/20">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-600 transition-all duration-300 group-hover:scale-105">Kakatiya University, Warangal, TG</h3>
+              <p className="text-purple-600 font-medium mb-4 group-hover:animate-pulse">B.C.A. in Computer Applications</p>
+              <p className="text-gray-600 mb-4 group-hover:text-gray-800 transition-colors duration-300">May 2022</p>
+            </Card>
           </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-2 gap-8">
+      <section 
+        id="projects" 
+        className="py-24 px-6 bg-gradient-to-br from-gray-50 to-green-50 relative"
+        data-animate
+      >
+        <div className={`max-w-6xl mx-auto transition-all duration-1000 delay-400 ${
+          visibleSections.has('projects') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">Project Experience</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              <Card key={index} className="p-8 border-0 shadow-xl bg-white/80 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Code2 className="w-6 h-6 text-white" />
+              <Card key={index} className="p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 bg-white group hover:bg-gradient-to-br hover:from-white hover:to-green-50 transform hover:scale-[1.02] hover:rotate-1 border-0 shadow-lg hover:shadow-green-500/20">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold group-hover:text-green-600 transition-all duration-300 group-hover:scale-105">{project.title}</h3>
+                    {project.subtitle && (
+                      <p className="text-sm text-blue-600 font-medium mt-1 group-hover:animate-pulse">{project.subtitle}</p>
+                    )}
                   </div>
-                  <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ExternalLink className="w-4 h-4" />
-                  </Button>
+                  <ExternalLink className="w-5 h-5 text-gray-400 hover:text-green-600 transition-all duration-300 cursor-pointer hover:scale-150 hover:rotate-12 group-hover:animate-bounce" />
                 </div>
-                
-                <h3 className="text-xl font-bold text-slate-900 mb-3">{project.title}</h3>
-                <p className="text-slate-600 mb-6 leading-relaxed">{project.description}</p>
-                
-                <div className="mb-6">
-                  <h4 className="font-semibold text-slate-900 mb-3">Key Features</h4>
-                  <ul className="space-y-2">
-                    {project.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-sm text-slate-600">
-                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="mb-6">
-                  <div className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-green-50 to-emerald-50 rounded-full border border-green-200">
-                    <span className="text-xs font-medium text-green-700">Impact: {project.impact}</span>
-                  </div>
-                </div>
-                
+                <p className="text-gray-600 mb-6 leading-relaxed hover:text-gray-800 transition-colors duration-300 group-hover:scale-105">{project.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((tech) => (
-                    <Badge key={tech} variant="outline" className="border-slate-300 hover:bg-slate-50 transition-colors duration-300">
-                      {tech}
-                    </Badge>
+                    <Badge key={tech} variant="secondary" className="hover:bg-green-100 hover:text-green-700 transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-lg cursor-pointer hover:animate-pulse">{tech}</Badge>
                   ))}
                 </div>
               </Card>
@@ -474,116 +416,156 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Skills Section */}
-      <section id="skills" className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
-              Technical Expertise
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-              Comprehensive skill set spanning the entire data science and machine learning pipeline
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Object.entries(skills).map(([category, skillList], index) => (
-              <Card key={category} className="p-8 border-0 shadow-xl bg-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
-                    {category === "Programming" && <Code2 className="w-6 h-6 text-white" />}
-                    {category === "Machine Learning" && <Brain className="w-6 h-6 text-white" />}
-                    {category === "Big Data" && <Database className="w-6 h-6 text-white" />}
-                    {category === "Databases" && <Database className="w-6 h-6 text-white" />}
-                    {category === "Cloud & DevOps" && <Code2 className="w-6 h-6 text-white" />}
-                    {category === "Visualization" && <Star className="w-6 h-6 text-white" />}
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900">{category}</h3>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  {skillList.map((skill) => (
-                    <Badge key={skill} variant="secondary" className="justify-center py-2 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-blue-50 hover:to-purple-50 hover:text-blue-700 transition-all duration-300 cursor-pointer">
+      <section 
+        className="py-24 px-6 bg-gradient-to-br from-gray-50 to-yellow-50 relative"
+        data-animate
+        id="skills"
+      >
+        <div className={`max-w-6xl mx-auto transition-all duration-1000 delay-500 ${
+          visibleSections.has('skills') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">Skills & Tools</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {Object.entries(skills).map(([category, items], categoryIndex) => (
+              <div key={category} className={`transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${
+                visibleSections.has('skills') 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`} style={{ transitionDelay: `${categoryIndex * 0.1}s` }}>
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 hover:text-blue-600 transition-all duration-300 hover:scale-110 cursor-default">{category}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {items.map((skill, skillIndex) => (
+                    <Badge 
+                      key={skill} 
+                      className="bg-blue-50 text-blue-700 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:shadow-lg cursor-pointer hover:rotate-3 animate-float"
+                      style={{ animationDelay: `${skillIndex * 0.1}s` }}
+                    >
                       {skill}
                     </Badge>
                   ))}
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section 
+        className="py-24 px-6 bg-gradient-to-br from-gray-50 to-yellow-50 relative"
+        data-animate
+        id="certifications"
+      >
+        <div className={`max-w-6xl mx-auto transition-all duration-1000 delay-600 ${
+          visibleSections.has('certifications') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">Certifications</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {certifications.map((cert, index) => (
+              <Card key={index} className="p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white hover:bg-gradient-to-br hover:from-white hover:to-yellow-50 group transform hover:scale-[1.02] hover:rotate-1 border-0 shadow-lg hover:shadow-yellow-500/20">
+                <p className="font-medium text-gray-800 group-hover:text-yellow-700 transition-all duration-300 group-hover:scale-105">{cert}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Let's Build Something Amazing Together
-          </h2>
-          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium">
-            Ready to leverage data science and machine learning to solve your toughest challenges? 
-            Let's connect and explore possibilities.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="bg-white text-slate-900 hover:bg-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-medium"
-              onClick={() => window.open('mailto:aakashkunarapu17@gmail.com')}
-            >
-              <Mail className="w-5 h-5 mr-2" />
-              Get In Touch
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-slate-900 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 font-medium"
-              onClick={() => window.open('/lovable-uploads/Aakash_Kunarapu_DS.pdf', '_blank')}
-            >
-              <Download className="w-5 h-5 mr-2" />
-              Download Resume
-            </Button>
+      <section 
+        id="contact" 
+        className="py-24 px-6 relative"
+        data-animate
+      >
+        <div className={`max-w-4xl mx-auto transition-all duration-1000 delay-700 ${
+          visibleSections.has('contact') 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
+          <h2 className="text-3xl md:text-4xl font-light mb-16 bg-gradient-to-r from-gray-900 via-blue-600 to-purple-600 bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite]">Contact</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+              <h3 className="text-xl font-semibold mb-6 hover:text-blue-600 transition-colors duration-300">Get in touch</h3>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3 group hover:transform hover:translate-x-4 transition-all duration-300 hover:bg-blue-50 p-3 rounded-lg cursor-pointer">
+                  <Mail className="w-5 h-5 text-blue-600 group-hover:scale-150 group-hover:animate-bounce transition-transform duration-300" />
+                  <a href="mailto:aakashkunarapu17@gmail.com" className="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                    aakashkunarapu17@gmail.com
+                  </a>
+                </div>
+                <div className="flex items-center space-x-3 group hover:transform hover:translate-x-4 transition-all duration-300 hover:bg-blue-50 p-3 rounded-lg cursor-pointer">
+                  <Phone className="w-5 h-5 text-blue-600 group-hover:scale-150 group-hover:animate-bounce transition-transform duration-300" />
+                  <a href="tel:+13302810912" className="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                    +1 330-281-0912
+                  </a>
+                </div>
+                <div className="flex items-center space-x-3 group hover:transform hover:translate-x-4 transition-all duration-300 hover:bg-blue-50 p-3 rounded-lg cursor-pointer">
+                  <Linkedin className="w-5 h-5 text-blue-600 group-hover:scale-150 group-hover:animate-bounce transition-transform duration-300" />
+                  <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                    LinkedIn Profile
+                  </a>
+                </div>
+              </div>
+            </div>
+            <Card className="p-8 bg-white hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:rotate-1 border-0 shadow-lg hover:shadow-blue-500/20">
+              <form onSubmit={handleFormSubmit} className="space-y-6">
+                <div>
+                  <Input 
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Your Name" 
+                    className="border-gray-200 focus:border-blue-600 transition-all duration-300 hover:border-blue-400 hover:scale-105 focus:scale-105" 
+                    required
+                  />
+                </div>
+                <div>
+                  <Input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Your Email" 
+                    className="border-gray-200 focus:border-blue-600 transition-all duration-300 hover:border-blue-400 hover:scale-105 focus:scale-105" 
+                    required
+                  />
+                </div>
+                <div>
+                  <Textarea 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Your Message" 
+                    rows={4} 
+                    className="border-gray-200 focus:border-blue-600 transition-all duration-300 hover:border-blue-400 hover:scale-105 focus:scale-105" 
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 transform hover:-translate-y-1 animate-glow">
+                  Send Message
+                </Button>
+              </form>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-6 md:mb-0">
-              <Avatar className="w-10 h-10 ring-2 ring-slate-700">
-                <AvatarImage src="/lovable-uploads/63457843-c51b-4e97-a03e-9927d5c4f2d2.png" />
-                <AvatarFallback className="bg-gradient-to-br from-slate-600 to-slate-800 text-white">AK</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-semibold">Aakash Kunarapu</p>
-                <p className="text-sm text-slate-400 font-medium">Data Scientist & ML Engineer</p>
-              </div>
-            </div>
-            
-            <div className="flex space-x-6">
-              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-slate-800">
-                <Mail className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-slate-800">
-                <Linkedin className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-slate-800">
-                <Github className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-          
-          <Separator className="my-8 bg-slate-700" />
-          
-          <div className="text-center text-slate-400">
-            <p className="font-medium">&copy; {new Date().getFullYear()} Aakash Kunarapu. Crafted with passion for data science.</p>
+      <ChatBot />
+
+      <footer className="py-12 px-6 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-600 text-sm hover:text-gray-800 transition-colors duration-300 hover:scale-105">© 2025 Aakash Kunarapu. All rights reserved.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="https://www.linkedin.com/in/aakash-kunarapu-80a55424b/" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-150 hover:rotate-12 animate-float">
+              <Linkedin className="w-5 h-5" />
+            </a>
+            <a href="#" className="text-gray-400 hover:text-blue-600 transition-all duration-300 hover:scale-150 hover:rotate-12 animate-float" style={{ animationDelay: '1s' }}>
+              <Github className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </footer>
-
-      <GeminiChatBot />
     </div>
   );
 };
